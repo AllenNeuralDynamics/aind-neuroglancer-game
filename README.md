@@ -1,3 +1,21 @@
+# AIND Neuroglancer Game
+
+This repo is for Neuroglancer-based cell annotation game. The repo is under active development.
+
+## Local development
+To run Neuroglancer at http://localhost:8080 (see [Building](#building) for details):
+```sh
+npm i
+npm run dev-server
+```
+
+## Viewing a 
+If you have the S3 location of the `neuroglancer_config.json` for a brain image, simply append that to the url to view it.
+- For example, we have a dev dataset at `s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/`.
+- It can be viewed at `http://localhost:8080/#!s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/neuroglancer_config.json?`
+
+### The following section contains the original README contents from https://github.com/google/neuroglancer/
+
 ## Neuroglancer: Web-based volumetric data visualization
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
