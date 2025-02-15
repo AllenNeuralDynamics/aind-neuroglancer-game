@@ -16,4 +16,4 @@ RUN npm install
 EXPOSE 8080
 
 # Start the Neuroglancer server
-CMD ["npm", "run", "dev-server"]
+CMD [ "npx", "tsx", "./build_tools/cli.ts", "serve", "--host=0.0.0.0" ]
