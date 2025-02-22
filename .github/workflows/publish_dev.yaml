@@ -2,7 +2,7 @@ name: Tag and Publish
 on:
   push:
     branches:
-      - dev
+      - ci-1-ecs-deploy
 
 jobs:
   publish:
@@ -28,6 +28,7 @@ jobs:
           push: true
           tags: ghcr.io/allenneuraldynamics/aind-neuroglancer-game:dev
   update_ecs_service :
+    if: false
     runs-on: ubuntu-latest
     needs: publish
     permissions:
