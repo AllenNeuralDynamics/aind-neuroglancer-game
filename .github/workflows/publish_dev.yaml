@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Pull latest changes
-        run: git pull origin main
+        run: git pull origin dev
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
