@@ -1,0 +1,1 @@
+These mockups were created based on an open-source Geoguesser game (https://github.com/spider-hand/GeoguessMaster)
