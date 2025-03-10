@@ -9,10 +9,12 @@ npm i
 npm run dev-server
 ```
 
-## Viewing a 
+## Viewing a dataset
 If you have the S3 location of the `neuroglancer_config.json` for a brain image, simply append that to the url to view it.
 - For example, we have a dev dataset at `s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/`.
-- It can be viewed at `http://localhost:8080/#!s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/neuroglancer_config.json?`
+- Locally, it can be viewed at `http://localhost:8080/#!s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/neuroglancer_config.json?`
+- The app is also deployed to http://34.221.82.139:8080. To view the same dataset: `http://34.221.82.139:8080/#!s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/neuroglancer_config.json?`
+- Please note that any dataset can be viewed in this way (including those in aind-open-data).
 
 ### The following section contains the original README contents from https://github.com/google/neuroglancer/
 
