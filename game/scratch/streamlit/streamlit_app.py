@@ -1,9 +1,12 @@
 import json
+import os
+from pathlib import Path
 import neuroglancer
 import streamlit as st
 import streamlit.components.v1 as components
 from neuroglancer_utils import create_default_viewer, url_to_viewer_state, viewer_state_to_json_dump, json_dump_to_viewer_state, download_s3_state_config
 
+CURR_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
 # External neuroglancer Urls
 EXTERNAL_DOMAIN = "http://52.43.100.13:8080" # alternatively use "https://neuroglancer-demo.appspot.com" or current gcloud deployment
 TEST_DATASET_CONFIG = "s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/neuroglancer_config.json"
@@ -18,12 +21,11 @@ st.set_page_config(layout="wide")
 # title
 st.title("Neuroglancer Python Integration Demo")
 
-components.iframe(
-      src=f"{url}#!{TEST_DATASET_CONFIG}",
-      width=1000,
-      height=1000,
-    )
-
+# components.iframe(
+#       src=f"{url}#!{TEST_DATASET_CONFIG}",
+#       width=1000,
+#       height=1000,
+#     )
 
 # create default neuroglancer
 def create_initial_viewer():
@@ -66,12 +68,20 @@ if s3_location:
   st.json(contents)
   # create a neuroglancer viewer using the s3 location
   viewer_state = json_dump_to_viewer_state(json_dump=contents)
-  
-  
-
   viewer = st.session_state.viewer
   viewer.set_state(viewer_state)
   
+# button to load state from initial_state.json
+if st.button("Load initial state from initial_state.json (Hackathon example)"):
+  # load the initial state from the json file
+  # get parent
+  dir = CURR_DIR.parent.parent / "initial_state.json"
+  with open(dir, "r") as f:
+    initial_state = json.load(f)
+  # set the viewer state to the initial state
+  viewer = st.session_state.viewer
+  viewer.set_state(initial_state)
+
 
 # display viewer_url
 st.write(f"Viewer URL: {st.session_state.get('viewer_url', None)}")
