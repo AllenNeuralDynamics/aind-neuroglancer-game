@@ -1,0 +1,101 @@
+{
+  "dimensions": {
+    "z": [
+      0.000002,
+      "m"
+    ],
+    "y": [
+      0.0000018,
+      "m"
+    ],
+    "x": [
+      0.0000018,
+      "m"
+    ],
+    "t": [
+      0.001,
+      "s"
+    ]
+  },
+  "position": [
+    2002.168212890625,
+    3155.5,
+    5941.2666015625,
+    0.5
+  ],
+  "crossSectionOrientation": [
+    0.39069864153862,
+    0.5893679261207581,
+    0.5893679261207581,
+    -0.39069864153862
+  ],
+  "crossSectionScale": 1.6487212707001297,
+  "projectionScale": 16384,
+  "layers": [
+    {
+      "type": "image",
+      "source": "zarr://s3://aind-open-data/SmartSPIM_695721_2023-09-30_05-54-33_stitched_2023-11-11_01-44-48/image_tile_fusing/OMEZarr/Ex_561_Em_593.zarr",
+      "localDimensions": {
+        "c'": [
+          1,
+          ""
+        ]
+      },
+      "localPosition": [
+        0.5
+      ],
+      "tab": "rendering",
+      "blend": "additive",
+      "shader": "#uicontrol vec3 color color(default=\"#f15211\")\n#uicontrol invlerp normalized\nvoid main() {\nemitRGB(color * normalized());\n}",
+      "shaderControls": {
+        "normalized": {
+          "range": [
+            105,
+            2344
+          ],
+          "window": [
+            0,
+            3000
+          ]
+        }
+      },
+      "name": "Ex_561_Em_593"
+    },
+    {
+      "type": "image",
+      "source": "zarr://s3://aind-open-data/SmartSPIM_695721_2023-09-30_05-54-33_stitched_2023-11-11_01-44-48/image_tile_fusing/OMEZarr/Ex_639_Em_660.zarr",
+      "localDimensions": {
+        "c'": [
+          1,
+          ""
+        ]
+      },
+      "localPosition": [
+        0.5
+      ],
+      "tab": "rendering",
+      "blend": "additive",
+      "shader": "#uicontrol vec3 color color(default=\"#f00050\")\n#uicontrol invlerp normalized\nvoid main() {\nemitRGB(color * normalized());\n}",
+      "shaderControls": {
+        "color": "#ffffff",
+        "normalized": {
+          "range": [
+            0,
+            600
+          ]
+        }
+      },
+      "name": "Ex_639_Em_660"
+    },
+    {
+      "type": "annotation",
+      "source": "precomputed://s3://aind-open-data/SmartSPIM_695721_2023-09-30_05-54-33_stitched_2023-11-11_01-44-48/image_cell_segmentation/Ex_561_Em_593/visualization/precomputed",
+      "tab": "source",
+      "name": "algorithm"
+    }
+  ],
+  "selectedLayer": {
+    "size": 350
+  },
+  "layout": "4panel"
+}
