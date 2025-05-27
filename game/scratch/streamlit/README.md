@@ -1,4 +1,4 @@
-# AIND Neuroglancer Game
+# AIND Neuroglancer Game Demo
 
 
 This folder is to test the Neuroglancer Python Integration within a streamlit app.
