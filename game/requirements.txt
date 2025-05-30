@@ -1,3 +1,3 @@
 neuroglancer
-streamlit
+streamlit>=1.31.0
 boto3
