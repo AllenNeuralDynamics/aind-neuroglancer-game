@@ -9,6 +9,9 @@ class Pages(Enum):
     ACCOUNT = Page(
         link="pages/account.py", label="Account", icon=":material/account_circle:"
     )
+    ADMIN = Page(
+        link="pages/admin.py", label="Admin", icon=":material/manage_accounts:"
+    )
     DEMO = Page(link="pages/demo.py", label="Demo", icon=":material/star:")
     HOME = Page(link="pages/home.py", label="Home", icon=":material/home:")
     LEADERBOARD = Page(
@@ -21,9 +24,15 @@ _USER_PAGES = [
     *_GUEST_PAGES,
     Pages.LEADERBOARD.value,
 ]
+_ADMIN_PAGES = [
+    *_USER_PAGES,
+    Pages.ADMIN.value,
+]
+
 
 class UserRoles(Enum):
     """Possible user roles in the app"""
 
     GUEST = UserRole(label="guest", allowed_pages=_GUEST_PAGES)
     USER = UserRole(label="user", allowed_pages=_USER_PAGES)
+    ADMIN = UserRole(label="admin", allowed_pages=_ADMIN_PAGES)
