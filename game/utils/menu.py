@@ -32,3 +32,18 @@ def login_menu():
     """Display navigation menu for unauthenticated users"""
     page = Pages.LOGIN.value
     st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
+
+
+def sanity_check_role(link: str):
+    """Sanity check to verify current user role is allowed to access a given page"""
+    role = st.session_state.get("role", "Unknown")
+    if role not in UserRoles.__members__:
+        st.error(f"Unknown role: {role}")
+        st.stop()
+        return
+    user_role = UserRoles[role]
+    allowed_pages = user_role.value.allowed_pages
+    if link not in [page.link for page in allowed_pages]:
+        st.error(f"You do not have permission to view this page.")
+        st.stop()
+        return
