@@ -27,6 +27,13 @@ def authenticated_menu():
     for page in user_role.value.allowed_pages:
         st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
 
+    # Logout button at bottom of sidebar
+    st.sidebar.markdown("---")
+    st.sidebar.write(f"Logged in as **{role}**")
+    if st.sidebar.button("Log out", icon=":material/login:"):
+        st.session_state.role = None
+        st.switch_page(Pages.LOGIN.value.link)
+
 
 def login_menu():
     """Display navigation menu for unauthenticated users"""
