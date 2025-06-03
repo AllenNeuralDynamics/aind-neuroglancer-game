@@ -19,10 +19,11 @@ class Pages(Enum):
     )
 
 
-_GUEST_PAGES = [Pages.HOME.value, Pages.DEMO.value, Pages.ACCOUNT.value]
+_GUEST_PAGES = [Pages.HOME.value, Pages.DEMO.value]
 _USER_PAGES = [
     *_GUEST_PAGES,
     Pages.LEADERBOARD.value,
+    Pages.ACCOUNT.value,
 ]
 _ADMIN_PAGES = [
     *_USER_PAGES,
