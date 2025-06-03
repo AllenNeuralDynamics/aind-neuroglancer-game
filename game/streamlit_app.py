@@ -1,5 +1,5 @@
 import streamlit as st
-from config import Pages, UserRoles
+from config import Constants, Pages, UserRoles
 from utils.menu import menu
 
 # wide layout
@@ -9,7 +9,7 @@ st.set_page_config(layout="wide")
 if "role" not in st.session_state:
     st.session_state.role = None
 
-st.title("AIND Neuroglancer Game")
+st.title(Constants.APP_NAME.value)
 
 # Log in
 st.header("Log in")

@@ -1,14 +1,14 @@
 from pathlib import Path
 
 import streamlit as st
-from config import Pages
+from config import Constants, Pages
 from utils.menu import menu_with_redirect, sanity_check_role
 
 # Redirect to login if not logged in, otherwise show the navigation menu
 menu_with_redirect()
 sanity_check_role(f"pages/{Path(__file__).name}")
 
-st.title("Welcome to the Neuroglancer Game!")
+st.title(f"Welcome to the {Constants.APP_NAME.value}!")
 
 st.write(
     "This is a game that allows you to explore and annotate brain data using Neuroglancer."

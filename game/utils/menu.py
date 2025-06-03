@@ -1,5 +1,5 @@
 import streamlit as st
-from config import Pages, UserRoles
+from config import Constants, Pages, UserRoles
 
 
 def menu_with_redirect():
@@ -24,11 +24,12 @@ def authenticated_menu():
         st.error(f"Unknown role: {role}")
         return
     user_role = UserRoles[role]
+    st.sidebar.header(Constants.APP_NAME.value, divider="rainbow")
     for page in user_role.value.allowed_pages:
         st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
 
     # Logout button at bottom of sidebar
-    st.sidebar.markdown("---")
+    st.sidebar.divider()
     st.sidebar.write(f"Logged in as **{role}**")
     if st.sidebar.button("Log out", icon=":material/login:"):
         st.session_state.role = None
@@ -38,6 +39,7 @@ def authenticated_menu():
 def login_menu():
     """Display navigation menu for unauthenticated users"""
     page = Pages.LOGIN.value
+    st.sidebar.header(Constants.APP_NAME.value, divider="rainbow")
     st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
 
 

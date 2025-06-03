@@ -4,6 +4,12 @@ from enum import Enum
 from models import Page, UserRole
 
 
+class Constants(Enum):
+    """Constants used in the app"""
+
+    APP_NAME = "AIND Neuroglancer Game"
+
+
 class Pages(Enum):
     LOGIN = Page(link="streamlit_app.py", label="Log in", icon=":material/login:")
     ACCOUNT = Page(
