@@ -2,6 +2,7 @@ from pathlib import Path
 
 import streamlit as st
 from config import Constants, GameModes
+from models import GameMode
 from utils.menu import menu_with_redirect, sanity_check_role
 
 # Redirect to login if not logged in, otherwise show the navigation menu
@@ -10,6 +11,50 @@ sanity_check_role(f"pages/{Path(__file__).name}")
 
 st.title(f"Welcome to the {Constants.APP_NAME.value}!")
 st.write("Choose your game mode to start exploring.")
+
+
+@st.dialog("Game Options")
+def show_game_options(game_mode: GameMode):
+    """Dialog for single player game options."""
+    st.header(game_mode.label, divider="rainbow")
+    st.caption(game_mode.description)
+    # inputs for game options
+    time_per_round = st.number_input(
+        "Time per round (minutes)",
+        min_value=1,
+        max_value=60,
+        value=3,
+        step=1,
+        help="How long each round will last",
+    )
+    allow_movement = st.radio(
+        "Allow move",
+        options=[True, False],
+        format_func=lambda x: "Yes" if x else "No",
+        index=0,
+        help="Whether you can move around the brain during the game.",
+    )
+    allow_zoom = st.radio(
+        "Allow zoom",
+        options=[True, False],
+        format_func=lambda x: "Yes" if x else "No",
+        index=0,
+        help="Whether you can zoom in/out of the brain during the game.",
+    )
+    # start game button
+    if st.button("Start game", use_container_width=True):
+        # save game options to session state
+        st.session_state.game_options = {
+            "game_mode": game_mode.label,
+            "time_per_round": time_per_round,
+            "allow_movement": allow_movement,
+            "allow_zoom": allow_zoom,
+        }
+        # redirect to the game page
+        if game_mode.link is None:
+            st.error("This game mode is not implemented yet.")
+        else:
+            st.switch_page(game_mode.link)
 
 # Grid layout for game modes
 modes = list(GameModes)
@@ -41,4 +86,4 @@ for row in range(rows):
                     if game_mode.link is None:
                         st.error("This game mode is not implemented yet.")
                     else:
-                        st.switch_page(game_mode.link)
+                        show_game_options(game_mode)
