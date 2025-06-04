@@ -43,7 +43,7 @@ class GameModes(Enum):
     SINGLE_PLAYER = GameMode(
         label="Single Player",
         description="Explore a brain and challenge yourself to create annotations on your own.",
-        link=Pages.DEMO.value.link,  # Temp redirect to demo
+        link="pages/game_single_player.py",
     )
     MULTIPLAYER = GameMode(
         label="Multiplayer",
