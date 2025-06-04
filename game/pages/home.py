@@ -19,10 +19,18 @@ def show_game_options(game_mode: GameMode):
     st.header(game_mode.label, divider="rainbow")
     st.caption(game_mode.description)
     # inputs for game options
+    num_rounds = st.number_input(
+        "Number of rounds",
+        min_value=1,
+        max_value=5,
+        value=3,
+        step=1,
+        help="How many rounds you want to play",
+    )
     time_per_round = st.number_input(
         "Time per round (minutes)",
         min_value=1,
-        max_value=60,
+        max_value=10,
         value=3,
         step=1,
         help="How long each round will last",
@@ -46,6 +54,7 @@ def show_game_options(game_mode: GameMode):
         # save game options to session state
         st.session_state.game_options = {
             "game_mode": game_mode.label,
+            "num_rounds": num_rounds,
             "time_per_round": time_per_round,
             "allow_movement": allow_movement,
             "allow_zoom": allow_zoom,
