@@ -51,8 +51,7 @@ def sanity_check_role(link: str):
         st.stop()
         return
     user_role = UserRoles[role]
-    allowed_pages = user_role.value.allowed_pages
-    if link not in [page.link for page in allowed_pages]:
+    if link not in user_role.value.allowed_links:
         st.error(f"You do not have permission to view this page.")
         st.stop()
         return

@@ -73,10 +73,13 @@ class GameModes(Enum):
         is_learning_mode=True,
     )
 
+_ALL_ALLOWED_GAME_MODES = [
+    GameModes.SINGLE_PLAYER.value,
+]
 
 class UserRoles(Enum):
     """Possible user roles in the app"""
 
-    GUEST = UserRole(label="guest", allowed_pages=_GUEST_PAGES)
-    USER = UserRole(label="user", allowed_pages=_USER_PAGES)
-    ADMIN = UserRole(label="admin", allowed_pages=_ADMIN_PAGES)
+    GUEST = UserRole(label="guest", allowed_pages=_GUEST_PAGES, allowed_game_modes=_ALL_ALLOWED_GAME_MODES)
+    USER = UserRole(label="user", allowed_pages=_USER_PAGES, allowed_game_modes=_ALL_ALLOWED_GAME_MODES)
+    ADMIN = UserRole(label="admin", allowed_pages=_ADMIN_PAGES, allowed_game_modes=_ALL_ALLOWED_GAME_MODES)

@@ -38,7 +38,16 @@ class UserRole:
 
     label: str
     allowed_pages: List[Page]
+    allowed_game_modes: List[GameMode]
 
-    def __init__(self, label: str, allowed_pages: List[Page]):
+    def __init__(self, label: str, allowed_pages: List[Page], allowed_game_modes: List[GameMode]):
         self.label = label
         self.allowed_pages = allowed_pages
+        self.allowed_game_modes = allowed_game_modes
+
+    @property
+    def allowed_links(self) -> List[str]:
+        """List of all allowed links for this user role"""
+        page_links = [page.link for page in self.allowed_pages]
+        mode_links = [mode.link for mode in self.allowed_game_modes if mode.link is not None]
+        return page_links + mode_links
