@@ -1,7 +1,7 @@
 """Module to define configurations for the app, including user roles and pages."""
 from enum import Enum
 
-from models import Page, UserRole
+from models import GameMode, Page, UserRole
 
 
 class Constants(Enum):
@@ -35,6 +35,43 @@ _ADMIN_PAGES = [
     *_USER_PAGES,
     Pages.ADMIN.value,
 ]
+
+
+class GameModes(Enum):
+    """Possible game modes in the app"""
+
+    SINGLE_PLAYER = GameMode(
+        label="Single Player",
+        description="Explore a brain and challenge yourself to create annotations on your own.",
+        link=Pages.DEMO.value.link,  # Temp redirect to demo
+    )
+    MULTIPLAYER = GameMode(
+        label="Multiplayer",
+        description="Compete with others in real-time annotation battles.",
+        disabled=True,
+    )
+    DAILY_CHALLENGE = GameMode(
+        label="Daily Challenge",
+        description="Play a unique challenge every day and climb the leaderboard.",
+        disabled=True,
+    )
+    STREAK = GameMode(
+        label="Streak",
+        description="Make as many annotations as you can in a row without making a mistake.",
+        disabled=True,
+    )
+    TRAINING = GameMode(
+        label="Training",
+        description="Practice your annotation skills with guided exercises.",
+        disabled=True,
+        is_learning_mode=True,
+    )
+    TUTORIAL = GameMode(
+        label="Tutorial",
+        description="Learn the basics of neuroglancer and annotation techniques.",
+        disabled=True,
+        is_learning_mode=True,
+    )
 
 
 class UserRoles(Enum):
