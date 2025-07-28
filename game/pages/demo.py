@@ -11,6 +11,7 @@ from utils.neuroglancer import (
     json_dump_to_viewer_state,
     url_to_viewer_state,
     viewer_state_to_json_dump,
+    get_viewer_url,
 )
 
 CURR_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -31,7 +32,7 @@ st.title("Neuroglancer Integration Demo")
 # create default neuroglancer
 def create_initial_viewer():
     viewer = create_default_viewer()
-    viewer_url = viewer.get_viewer_url()
+    viewer_url = get_viewer_url(viewer)
     # store viewer in session state
     if "viewer" not in st.session_state or st.session_state.viewer is None:
         st.session_state.viewer = viewer
