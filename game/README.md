@@ -15,11 +15,18 @@ For the POC, here are some features we would like to implement:
 - Stretch: Multi-Player Mode
 
 ## Installation
-```
+```sh
 pip install -r requirements.txt
 ```
 
 ## Start the streamlit app
-```
+```sh
 streamlit run streamlit_app.py
+```
+
+## Run using Docker
+
+```sh
+docker build -t aind-neuroglancer-game .
+docker run -p 8501:8501 -p 8080:8080 aind-neuroglancer-game
 ```
