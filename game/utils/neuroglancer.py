@@ -45,11 +45,11 @@ def create_default_viewer():
     viewer = create_viewer(image_layer=image_layer)
     return viewer
 
-def get_viewer_url(viewer: Viewer) -> str:
+def get_viewer_url(viewer: Viewer, host: str) -> str:
     """Gets the viewer url"""
     # viewer.get_viewer_url() gets the container machine ip and port
     # We want the url that can be accessed from the browser
-    return f"http://localhost:8080/v/{viewer.token}/"
+    return f"http://{host}:8080/v/{viewer.token}/"
 
 def url_to_viewer_state(url: str) -> ViewerState:
     """Parses state from a Neuroglancer URL"""
