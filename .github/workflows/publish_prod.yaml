@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  publish_neuroglancer_node:
+  publish_neuroglancer_game:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,7 +27,7 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/allenneuraldynamics/aind-neuroglancer-game:latest
-  publish_neuroglancer_streamlit:
+  publish_neuroglancer_game_streamlit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
