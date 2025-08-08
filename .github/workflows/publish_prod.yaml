@@ -2,7 +2,7 @@ name: Tag and Publish
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   publish_neuroglancer_game:
@@ -26,7 +26,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: .
           push: true
-          tags: ghcr.io/allenneuraldynamics/aind-neuroglancer-game:dev
+          tags: ghcr.io/allenneuraldynamics/aind-neuroglancer-game:latest
   publish_neuroglancer_game_streamlit:
     runs-on: ubuntu-latest
     steps:
@@ -48,7 +48,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: ./game
           push: true
-          tags: ghcr.io/allenneuraldynamics/aind-neuroglancer-streamlit-game:dev
+          tags: ghcr.io/allenneuraldynamics/aind-neuroglancer-streamlit-game:latest
   update_ecs_service :
     runs-on: ubuntu-latest
     needs: publish
@@ -56,10 +56,10 @@ jobs:
       id-token: write
       contents: read
     env:
-      ECS_ROLE: ${{ secrets.AWS_ECS_ROLE_DEV }}
-      AWS_REGION : ${{ vars.AWS_REGION_DEV }}
-      ECS_CLUSTER : ${{ vars.AWS_ECS_CLUSTER_DEV }}
-      ECS_SERVICE : ${{ vars.AWS_ECS_SERVICE_DEV }}
+      ECS_ROLE: ${{ secrets.AWS_ECS_ROLE_PROD }}
+      AWS_REGION : ${{ vars.AWS_REGION_PROD }}
+      ECS_CLUSTER : ${{ vars.AWS_ECS_CLUSTER_PROD }}
+      ECS_SERVICE : ${{ vars.AWS_ECS_SERVICE_PROD }}
     steps:
       - uses: actions/checkout@master
       - name: Pull latest changes
