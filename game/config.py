@@ -13,7 +13,8 @@ class Constants(Enum):
     NEUROGLANCER_IP = "0.0.0.0"             # or public IP of the machine for sharable display
     NEUROGLANCER_PORT = 8080                # unused port number
     NEUROGLANCER_VIEWER_HOST = os.getenv("VIEWER_URL_HOST", "localhost")
-
+    
+    GAME_STATUS_REFRESH_EVERY = 1           # seconds
 
 class Pages(Enum):
     LOGIN = Page(link="streamlit_app.py", label="Log in", icon=":material/login:")
