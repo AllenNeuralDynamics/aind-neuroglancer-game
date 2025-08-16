@@ -20,7 +20,6 @@ CURR_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
 EXTERNAL_DOMAIN = "http://52.43.100.13:8080"  # alternatively use "https://neuroglancer-demo.appspot.com" or current gcloud deployment
 TEST_DATASET_CONFIG = "s3://aind-open-data-dev-u5u0i5/SmartSPIM_660851_2023-04-03_16-25-48_stitched_2025-01-17_00-58-31/neuroglancer_config.json"
 EXTERNAL_TEST_DATASET_URL = f"{EXTERNAL_DOMAIN}/#!{TEST_DATASET_CONFIG}?"
-VIEWER_URL_HOST = os.getenv("VIEWER_URL_HOST", "localhost")
 
 # Redirect to login if not logged in, otherwise show the navigation menu
 menu_with_redirect()
@@ -32,7 +31,7 @@ st.title("Neuroglancer Integration Demo")
 # create default neuroglancer
 def create_initial_viewer():
     viewer = create_default_viewer()
-    viewer_url = get_viewer_url(viewer, VIEWER_URL_HOST)
+    viewer_url = get_viewer_url(viewer)
     # store viewer in session state
     if "viewer" not in st.session_state or st.session_state.viewer is None:
         st.session_state.viewer = viewer

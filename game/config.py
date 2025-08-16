@@ -1,5 +1,6 @@
 """Module to define configurations for the app, including user roles and pages."""
 from enum import Enum
+import os
 
 from models import GameMode, Page, UserRole
 
@@ -8,6 +9,10 @@ class Constants(Enum):
     """Constants used in the app"""
 
     APP_NAME = "AIND Neuroglancer Game"
+    
+    NEUROGLANCER_IP = "0.0.0.0"             # or public IP of the machine for sharable display
+    NEUROGLANCER_PORT = 8080                # unused port number
+    NEUROGLANCER_VIEWER_HOST = os.getenv("VIEWER_URL_HOST", "localhost")
 
 
 class Pages(Enum):
