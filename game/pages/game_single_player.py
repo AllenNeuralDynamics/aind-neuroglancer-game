@@ -2,8 +2,14 @@
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 from config import Constants
 from utils.menu import menu_with_redirect, sanity_check_role
+from utils.neuroglancer import (
+    create_default_viewer,
+    get_viewer_url,
+    viewer_state_to_json_dump,
+)
 
 # Redirect to login if not logged in, otherwise show the navigation menu
 menu_with_redirect(show_game_menu=True)
@@ -48,3 +54,26 @@ def update_game_status():
 
 
 update_game_status()
+
+
+# create default neuroglancer
+def create_initial_viewer():
+    viewer = create_default_viewer()
+    viewer_url = get_viewer_url(viewer)
+    # store viewer in session state
+    if "viewer" not in st.session_state or st.session_state.viewer is None:
+        st.session_state.viewer = viewer
+        st.session_state.viewer_url = viewer_url
+
+
+# display Neuroglancer viewer
+
+if "viewer_url" not in st.session_state:
+    create_initial_viewer()
+
+# TODO: hide this if round is not started
+components.iframe(
+    src=st.session_state.viewer_url,
+    width=1000,
+    height=1000,
+)
