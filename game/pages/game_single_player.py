@@ -7,6 +7,7 @@ from config import Constants
 from utils.menu import menu_with_redirect, sanity_check_role
 from utils.neuroglancer import (
     create_default_viewer,
+    get_annotations_from_state,
     get_viewer_url,
     viewer_state_to_json_dump,
 )
@@ -35,6 +36,7 @@ def update_game_status():
     if st.session_state.round_started:
         st.session_state.seconds_left -= Constants.GAME_STATUS_REFRESH_EVERY.value
     # display game status: Round, Time Left, Annotations
+    annotations = get_annotations_from_state(st.session_state.viewer.state) if "viewer" in st.session_state else []
     st.table(
         {
             "Round": [
@@ -43,7 +45,7 @@ def update_game_status():
             "Time Left": [
                 f"{st.session_state.seconds_left // 60:02}:{st.session_state.seconds_left % 60:02}"
             ],
-            "Annotations": [0],  # TODO: pull from viewer state!
+            "Annotations": [len(annotations)],
         }
     )
     # If time is up, stop the round
