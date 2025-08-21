@@ -30,52 +30,58 @@ if "round_started" not in st.session_state:
     st.session_state.round_started = True
 
 
-@st.fragment(run_every=Constants.GAME_STATUS_REFRESH_EVERY.value)
+# Game is running (round started), or between rounds, or finished all rounds
+if st.session_state.round_started:
+    # Set the timer fragment to run every second
+    run_every = Constants.GAME_STATUS_REFRESH_EVERY.value
+    # Create the initial neuroglancer viewer if needed
+    if "viewer_url" not in st.session_state:
+        viewer = create_default_viewer()
+        viewer_url = get_viewer_url(viewer)
+        st.session_state.viewer = viewer
+        st.session_state.viewer_url = viewer_url
+    # Display the neuroglancer viewer iframe
+    components.iframe(
+        src=st.session_state.viewer_url,
+        width=1000,
+        height=1000,
+    )
+else:
+    # Stop the timer fragment
+    run_every = None
+    # Display the summary of the current round
+    st.write("Time is up for the current round!")
+    st.write("Game Summary so far:")
+    st.json(st.session_state.game_summary)
+
+@st.fragment(run_every=run_every)
 def update_game_status():
-    # Update countdown timer
+    # Update countdown timer and display game status
     if st.session_state.round_started:
         st.session_state.seconds_left -= Constants.GAME_STATUS_REFRESH_EVERY.value
-    # display game status: Round, Time Left, Annotations
-    annotations = get_annotations_from_state(st.session_state.viewer.state) if "viewer" in st.session_state else []
-    st.table(
-        {
-            "Round": [
-                f"{st.session_state.current_round}/{game_options.get('num_rounds')}"
-            ],
-            "Time Left": [
-                f"{st.session_state.seconds_left // 60:02}:{st.session_state.seconds_left % 60:02}"
-            ],
-            "Annotations": [len(annotations)],
-        }
-    )
-    # If time is up, stop the round
-    if st.session_state.seconds_left <= 0:
-        st.write("Time is up for the current round!")
+        annotations = get_annotations_from_state(st.session_state.viewer.state) if "viewer" in st.session_state else []
+        st.table(
+            {
+                "Round": [
+                    f"{st.session_state.current_round}/{game_options.get('num_rounds')}"
+                ],
+                "Time Left": [
+                    f"{st.session_state.seconds_left // 60:02}:{st.session_state.seconds_left % 60:02}"
+                ],
+                "Annotations": [len(annotations)],
+            }
+        )
+    # If time is up, stop the round and save the annotations from this round
+    if st.session_state.seconds_left <= 0 and st.session_state.round_started:
         st.session_state.round_started = False
-        st.stop()
+        if "game_summary" not in st.session_state:
+            st.session_state.game_summary = dict()
+        st.session_state.game_summary[st.session_state.current_round] = {
+            "num_annotations": len(annotations),
+            "annotations": annotations,
+        }
+        # Full rerun to update the page
+        st.rerun()
 
 
 update_game_status()
-
-
-# create default neuroglancer
-def create_initial_viewer():
-    viewer = create_default_viewer()
-    viewer_url = get_viewer_url(viewer)
-    # store viewer in session state
-    if "viewer" not in st.session_state or st.session_state.viewer is None:
-        st.session_state.viewer = viewer
-        st.session_state.viewer_url = viewer_url
-
-
-# display Neuroglancer viewer
-
-if "viewer_url" not in st.session_state:
-    create_initial_viewer()
-
-# TODO: hide this if round is not started
-components.iframe(
-    src=st.session_state.viewer_url,
-    width=1000,
-    height=1000,
-)
