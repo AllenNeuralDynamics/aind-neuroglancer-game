@@ -8,10 +8,10 @@ from utils.menu import menu_with_redirect, sanity_check_role
 from utils.neuroglancer import (
     create_default_viewer,
     download_s3_state_config,
+    get_viewer_url,
     json_dump_to_viewer_state,
     url_to_viewer_state,
     viewer_state_to_json_dump,
-    get_viewer_url,
 )
 
 CURR_DIR = Path(os.path.dirname(os.path.abspath(__file__)))

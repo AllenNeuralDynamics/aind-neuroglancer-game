@@ -14,12 +14,11 @@ These should be cleared at the end of the game or when the user exits the game
 """
 
 import streamlit as st
-
 from config import Constants
 from utils.neuroglancer import get_annotations_from_state
 
-
 ######### Get game state from session_state #########
+
 
 def get_game_options_from_session_state() -> dict:
     """Retrieve game options from session_state. If not found, stop execution."""
@@ -31,7 +30,9 @@ def get_game_options_from_session_state() -> dict:
         st.stop()
     return game_options
 
+
 ######### Update game state in session_state #########
+
 
 def start_round(round_number: int, mins_per_round: int) -> None:
     """Initialize the game state for a new round."""
@@ -53,7 +54,11 @@ def process_round_timer() -> None:
     if st.session_state.round_started and st.session_state.seconds_left <= 0:
         st.session_state.round_started = False
         # TODO: get annotations from current round rather than total
-        annotations = get_annotations_from_state(st.session_state.viewer.state) if "viewer" in st.session_state else []
+        annotations = (
+            get_annotations_from_state(st.session_state.viewer.state)
+            if "viewer" in st.session_state
+            else []
+        )
         if "game_summary" not in st.session_state:
             st.session_state.game_summary = dict()
         st.session_state.game_summary[st.session_state.current_round] = {
@@ -69,6 +74,7 @@ def start_game():
     if "round_started" not in st.session_state:
         game_options = get_game_options_from_session_state()
         start_round(1, game_options.get("time_per_round"))
+
 
 def end_game():
     """Clear game state from session_state."""

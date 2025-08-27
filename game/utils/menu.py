@@ -4,6 +4,7 @@ import streamlit as st
 from config import Constants, Pages, UserRoles
 from utils.game import end_game
 
+
 def menu_with_redirect(show_game_menu: bool = False):
     """Redirect to main page if not logged in, otherwise render nav menu"""
     if "role" not in st.session_state or st.session_state.role is None:
@@ -17,6 +18,7 @@ def menu(show_game_menu: bool = False):
         _login_menu()
         return
     _authenticated_menu(show_game_menu)
+
 
 def _authenticated_menu(show_game_menu):
     """Display navigation or game menu for authenticated users"""
@@ -33,7 +35,9 @@ def _authenticated_menu(show_game_menu):
                 if k != "game_mode":
                     st.sidebar.caption(f"**{k.replace('_', ' ').title()}**: {v}")
             st.sidebar.divider()
-        if st.sidebar.button("Exit Game", icon=":material/exit_to_app:", use_container_width=True):
+        if st.sidebar.button(
+            "Exit Game", icon=":material/exit_to_app:", use_container_width=True
+        ):
             end_game()
             st.switch_page(Pages.HOME.value.link)
     else:
@@ -65,6 +69,6 @@ def sanity_check_role(link: str):
         return
     user_role = UserRoles[role]
     if link not in user_role.value.allowed_links:
-        st.error(f"You do not have permission to view this page.")
+        st.error("You do not have permission to view this page.")
         st.stop()
         return

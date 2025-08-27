@@ -3,21 +3,20 @@ from pathlib import Path
 
 import streamlit as st
 import streamlit.components.v1 as components
-from config import Constants
+from config import Constants, Pages
+from utils.game import (
+    end_game,
+    get_game_options_from_session_state,
+    process_round_timer,
+    start_game,
+    start_round,
+)
 from utils.menu import menu_with_redirect, sanity_check_role
 from utils.neuroglancer import (
     create_default_viewer,
     get_annotations_from_state,
     get_viewer_url,
 )
-from utils.game import (
-    start_round,
-    start_game,
-    get_game_options_from_session_state,
-    process_round_timer,
-    end_game,
-)
-from config import Pages
 
 # Redirect to login if not logged in, otherwise show the navigation menu
 menu_with_redirect(show_game_menu=True)
@@ -35,20 +34,29 @@ if st.session_state.round_started:
 else:
     run_every = None
 
+
 @st.fragment(run_every=run_every)
 def update_game_status():
-    '''Fragment to update countdown timer and display game status'''
+    """Fragment to update countdown timer and display game status"""
     process_round_timer()
     if st.session_state.round_started:
-        annotations = get_annotations_from_state(st.session_state.viewer.state) if "viewer" in st.session_state else []
+        annotations = (
+            get_annotations_from_state(st.session_state.viewer.state)
+            if "viewer" in st.session_state
+            else []
+        )
         num_annotations = len(annotations)
         col1, col2, col3 = st.columns(3)
         with col1:
             st.caption("⏳ Time Left")
-            st.write(f"{st.session_state.seconds_left // 60:02}:{st.session_state.seconds_left % 60:02}")
+            st.write(
+                f"{st.session_state.seconds_left // 60:02}:{st.session_state.seconds_left % 60:02}"
+            )
         with col2:
             st.caption("Round")
-            st.write(f"{st.session_state.current_round}/{GAME_OPTIONS.get('num_rounds')}")
+            st.write(
+                f"{st.session_state.current_round}/{GAME_OPTIONS.get('num_rounds')}"
+            )
         with col3:
             st.caption("Annotations")
             st.write(num_annotations)
@@ -74,7 +82,9 @@ if st.session_state.round_started:
 else:
     # Display the game summary and next buttons
     current_round = st.session_state.current_round
-    current_num_annotations = st.session_state.game_summary[current_round]["num_annotations"]
+    current_num_annotations = st.session_state.game_summary[current_round][
+        "num_annotations"
+    ]
     num_rounds = GAME_OPTIONS.get("num_rounds")
     total_num_annotations = sum(
         [
@@ -89,10 +99,14 @@ else:
             st.json(st.session_state.game_summary)
         # Button to start the next round
         if st.button("Start Next Round", type="primary"):
-            start_round(st.session_state.current_round + 1, GAME_OPTIONS.get("time_per_round"))
+            start_round(
+                st.session_state.current_round + 1, GAME_OPTIONS.get("time_per_round")
+            )
     else:
         st.balloons()
-        st.success(f"Thank you for playing! You made a total of {total_num_annotations} annotations.")
+        st.success(
+            f"Thank you for playing! You made a total of {total_num_annotations} annotations."
+        )
         with st.expander("Show game summary"):
             st.json(st.session_state.game_summary)
         # TODO: Save results to S3 and leaderboard

@@ -1,6 +1,6 @@
 """Module to define configurations for the app, including user roles and pages."""
-from enum import Enum
 import os
+from enum import Enum
 
 from models import GameMode, Page, UserRole
 
@@ -9,12 +9,13 @@ class Constants(Enum):
     """Constants used in the app"""
 
     APP_NAME = "AIND Neuroglancer Game"
-    
-    NEUROGLANCER_IP = "0.0.0.0"             # or public IP of the machine for sharable display
-    NEUROGLANCER_PORT = 8080                # unused port number
+
+    NEUROGLANCER_IP = "0.0.0.0"  # or public IP of the machine for sharable display
+    NEUROGLANCER_PORT = 8080  # unused port number
     NEUROGLANCER_VIEWER_HOST = os.getenv("VIEWER_URL_HOST", "localhost")
-    
-    GAME_STATUS_REFRESH_EVERY = 1           # seconds
+
+    GAME_STATUS_REFRESH_EVERY = 1  # seconds
+
 
 class Pages(Enum):
     LOGIN = Page(link="streamlit_app.py", label="Log in", icon=":material/login:")
@@ -79,13 +80,27 @@ class GameModes(Enum):
         is_learning_mode=True,
     )
 
+
 _ALL_ALLOWED_GAME_MODES = [
     GameModes.SINGLE_PLAYER.value,
 ]
 
+
 class UserRoles(Enum):
     """Possible user roles in the app"""
 
-    GUEST = UserRole(label="guest", allowed_pages=_GUEST_PAGES, allowed_game_modes=_ALL_ALLOWED_GAME_MODES)
-    USER = UserRole(label="user", allowed_pages=_USER_PAGES, allowed_game_modes=_ALL_ALLOWED_GAME_MODES)
-    ADMIN = UserRole(label="admin", allowed_pages=_ADMIN_PAGES, allowed_game_modes=_ALL_ALLOWED_GAME_MODES)
+    GUEST = UserRole(
+        label="guest",
+        allowed_pages=_GUEST_PAGES,
+        allowed_game_modes=_ALL_ALLOWED_GAME_MODES,
+    )
+    USER = UserRole(
+        label="user",
+        allowed_pages=_USER_PAGES,
+        allowed_game_modes=_ALL_ALLOWED_GAME_MODES,
+    )
+    ADMIN = UserRole(
+        label="admin",
+        allowed_pages=_ADMIN_PAGES,
+        allowed_game_modes=_ALL_ALLOWED_GAME_MODES,
+    )

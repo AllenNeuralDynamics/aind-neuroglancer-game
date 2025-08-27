@@ -25,7 +25,14 @@ class GameMode:
     link: Optional[str]
     is_learning_mode: bool
 
-    def __init__(self, label: str, description: str, disabled: bool = False, link: Optional[str] = None, is_learning_mode: bool = False):
+    def __init__(
+        self,
+        label: str,
+        description: str,
+        disabled: bool = False,
+        link: Optional[str] = None,
+        is_learning_mode: bool = False,
+    ):
         self.label = label
         self.description = description
         self.disabled = disabled
@@ -40,7 +47,9 @@ class UserRole:
     allowed_pages: List[Page]
     allowed_game_modes: List[GameMode]
 
-    def __init__(self, label: str, allowed_pages: List[Page], allowed_game_modes: List[GameMode]):
+    def __init__(
+        self, label: str, allowed_pages: List[Page], allowed_game_modes: List[GameMode]
+    ):
         self.label = label
         self.allowed_pages = allowed_pages
         self.allowed_game_modes = allowed_game_modes
@@ -49,5 +58,7 @@ class UserRole:
     def allowed_links(self) -> List[str]:
         """List of all allowed links for this user role"""
         page_links = [page.link for page in self.allowed_pages]
-        mode_links = [mode.link for mode in self.allowed_game_modes if mode.link is not None]
+        mode_links = [
+            mode.link for mode in self.allowed_game_modes if mode.link is not None
+        ]
         return page_links + mode_links

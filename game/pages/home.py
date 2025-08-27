@@ -65,6 +65,7 @@ def show_game_options(game_mode: GameMode):
         else:
             st.switch_page(game_mode.link)
 
+
 # Grid layout for game modes
 modes = list(GameModes)
 num_cols = 3
@@ -86,10 +87,19 @@ for row in range(rows):
             container.caption(game_mode.description)
             # play or coming soon button
             if game_mode.disabled:
-                container.button(label="Coming soon", key=f"play_{modes[idx].name}", disabled=True, icon=":material/schedule:",use_container_width=True)
+                container.button(
+                    label="Coming soon",
+                    key=f"play_{modes[idx].name}",
+                    disabled=True,
+                    icon=":material/schedule:",
+                    use_container_width=True,
+                )
             else:
                 if container.button(
-                    label="Play now", key=f"play_{modes[idx].name}", icon=":material/sports_esports:",use_container_width=True
+                    label="Play now",
+                    key=f"play_{modes[idx].name}",
+                    icon=":material/sports_esports:",
+                    use_container_width=True,
                 ):
                     # TODO: consider https://docs.streamlit.io/develop/api-reference/execution-flow/st.dialog
                     if game_mode.link is None:

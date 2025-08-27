@@ -5,11 +5,14 @@ from typing import Optional
 
 import boto3
 import neuroglancer
-from neuroglancer import ImageLayer, Viewer, ViewerState
 from config import Constants
+from neuroglancer import ImageLayer, Viewer, ViewerState
 
 # Create local neuroglancer server
-neuroglancer.set_server_bind_address(bind_address=Constants.NEUROGLANCER_IP.value, bind_port=Constants.NEUROGLANCER_PORT.value)
+neuroglancer.set_server_bind_address(
+    bind_address=Constants.NEUROGLANCER_IP.value,
+    bind_port=Constants.NEUROGLANCER_PORT.value,
+)
 # TODO: start/stop server:
 # https://neuroglancer-docs.web.app/python/api/index.html#server
 
@@ -46,11 +49,13 @@ def create_default_viewer():
     viewer = create_viewer(image_layer=image_layer)
     return viewer
 
+
 def get_viewer_url(viewer: Viewer) -> str:
     """Gets the viewer url"""
     # viewer.get_viewer_url() gets the container machine ip and port
     # We want the url that can be accessed from the browser
     return f"http://{Constants.NEUROGLANCER_VIEWER_HOST.value}:8080/v/{viewer.token}/"
+
 
 def url_to_viewer_state(url: str) -> ViewerState:
     """Parses state from a Neuroglancer URL"""
@@ -114,9 +119,9 @@ def get_annotations_from_state(viewer_state: ViewerState) -> list:
     annotation_layer = None
     # If there are multiple annotation layers
     # Assume we can take the one named "annotation"
-    for l in layers:
-        if l.get("type") == "annotation" and l.get("name") == "annotation":
-            annotation_layer = l
+    for layer in layers:
+        if layer.get("type") == "annotation" and layer.get("name") == "annotation":
+            annotation_layer = layer
             break
     if annotation_layer is None:
         print("No annotation layer found in the current viewer state.")
