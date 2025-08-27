@@ -1,3 +1,5 @@
+"""Utility functions for interacting with Neuroglancer."""
+
 import json
 from typing import Optional
 

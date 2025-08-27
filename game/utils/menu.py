@@ -1,6 +1,8 @@
+"""Utility functions for rendering navigation and game menus."""
+
 import streamlit as st
 from config import Constants, Pages, UserRoles
-
+from utils.game import end_game
 
 def menu_with_redirect(show_game_menu: bool = False):
     """Redirect to main page if not logged in, otherwise render nav menu"""
@@ -32,6 +34,7 @@ def _authenticated_menu(show_game_menu):
                     st.sidebar.caption(f"**{k.replace('_', ' ').title()}**: {v}")
             st.sidebar.divider()
         if st.sidebar.button("Exit Game", icon=":material/exit_to_app:", use_container_width=True):
+            end_game()
             st.switch_page(Pages.HOME.value.link)
     else:
         # Nav menu: page links, logout

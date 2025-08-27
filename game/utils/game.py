@@ -70,3 +70,18 @@ def start_game():
         game_options = get_game_options_from_session_state()
         start_round(1, game_options.get("time_per_round"))
 
+def end_game():
+    """Clear game state from session_state."""
+    # TODO: delete the viewer instance if needed
+    keys_to_clear = [
+        "current_round",
+        "seconds_left",
+        "round_started",
+        "viewer",
+        "viewer_url",
+        "game_summary",
+        "game_options",
+    ]
+    for key in keys_to_clear:
+        if key in st.session_state:
+            del st.session_state[key]

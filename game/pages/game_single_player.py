@@ -14,8 +14,10 @@ from utils.game import (
     start_round,
     start_game,
     get_game_options_from_session_state,
-    process_round_timer
+    process_round_timer,
+    end_game,
 )
+from config import Pages
 
 # Redirect to login if not logged in, otherwise show the navigation menu
 menu_with_redirect(show_game_menu=True)
@@ -99,3 +101,6 @@ else:
         # TODO: Allow users to download their results
         if st.button("Download Results"):
             st.info("Feature coming soon!")
+        if st.button("Exit Game"):
+            end_game()
+            st.switch_page(Pages.HOME.value.link)
