@@ -10,28 +10,22 @@ from utils.neuroglancer import (
     get_annotations_from_state,
     get_viewer_url,
 )
+from utils.game import (
+    start_round,
+    start_game,
+    get_game_options_from_session_state,
+    process_round_timer
+)
 
 # Redirect to login if not logged in, otherwise show the navigation menu
 menu_with_redirect(show_game_menu=True)
 sanity_check_role(f"pages/{Path(__file__).name}")
 
-# Selected game options
-if "game_options" in st.session_state:
-    game_options = st.session_state.game_options
-else:
-    st.error("No game options selected. Please select a game in the Home page.")
-    st.stop()
-
-def start_round(round_number: int):
-    """Initialize the game state for a new round."""
-    st.session_state.current_round = round_number
-    st.session_state.seconds_left = game_options.get("time_per_round") * 60
-    st.session_state.round_started = True
+GAME_OPTIONS = get_game_options_from_session_state()
 
 
 # Initialize and start the first round
-if "round_started" not in st.session_state:
-    start_round(1)
+start_game()
 
 # Set the timer fragment to run every second if the round is started
 if st.session_state.round_started:
@@ -41,32 +35,21 @@ else:
 
 @st.fragment(run_every=run_every)
 def update_game_status():
-    # Update countdown timer and display game status
+    '''Fragment to update countdown timer and display game status'''
+    process_round_timer()
     if st.session_state.round_started:
-        st.session_state.seconds_left -= Constants.GAME_STATUS_REFRESH_EVERY.value
         annotations = get_annotations_from_state(st.session_state.viewer.state) if "viewer" in st.session_state else []
-        st.table(
-            {
-                "Round": [
-                    f"{st.session_state.current_round}/{game_options.get('num_rounds')}"
-                ],
-                "Time Left": [
-                    f"{st.session_state.seconds_left // 60:02}:{st.session_state.seconds_left % 60:02}"
-                ],
-                "Annotations": [len(annotations)],
-            }
-        )
-    # If time is up, stop the round and save the annotations from this round
-    if st.session_state.seconds_left <= 0 and st.session_state.round_started:
-        st.session_state.round_started = False
-        if "game_summary" not in st.session_state:
-            st.session_state.game_summary = dict()
-        st.session_state.game_summary[st.session_state.current_round] = {
-            "num_annotations": len(annotations),
-            "annotations": annotations,
-        }
-        # Full rerun to update the page
-        st.rerun()
+        num_annotations = len(annotations)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.caption("⏳ Time Left")
+            st.write(f"{st.session_state.seconds_left // 60:02}:{st.session_state.seconds_left % 60:02}")
+        with col2:
+            st.caption("Round")
+            st.write(f"{st.session_state.current_round}/{GAME_OPTIONS.get('num_rounds')}")
+        with col3:
+            st.caption("Annotations")
+            st.write(num_annotations)
 
 
 # Display the game status and timer
@@ -87,7 +70,32 @@ if st.session_state.round_started:
         height=1000,
     )
 else:
-    # Display the summary of the current round
-    st.write("Time is up for the current round!")
-    st.write("Game Summary so far:")
-    st.json(st.session_state.game_summary)
+    # Display the game summary and next buttons
+    current_round = st.session_state.current_round
+    current_num_annotations = st.session_state.game_summary[current_round]["num_annotations"]
+    num_rounds = GAME_OPTIONS.get("num_rounds")
+    total_num_annotations = sum(
+        [
+            st.session_state.game_summary[r]["num_annotations"]
+            for r in st.session_state.game_summary
+        ]
+    )
+    st.subheader(f"Time's up for Round {current_round}/{num_rounds}!")
+    if current_round < num_rounds:
+        st.info(f"You made {current_num_annotations} annotations this round.")
+        with st.expander("Show current summary"):
+            st.json(st.session_state.game_summary)
+        # Button to start the next round
+        if st.button("Start Next Round", type="primary"):
+            start_round(st.session_state.current_round + 1, GAME_OPTIONS.get("time_per_round"))
+    else:
+        st.balloons()
+        st.success(f"Thank you for playing! You made a total of {total_num_annotations} annotations.")
+        with st.expander("Show game summary"):
+            st.json(st.session_state.game_summary)
+        # TODO: Save results to S3 and leaderboard
+        if st.button("Submit Results", type="primary"):
+            st.info("Feature coming soon!")
+        # TODO: Allow users to download their results
+        if st.button("Download Results"):
+            st.info("Feature coming soon!")
