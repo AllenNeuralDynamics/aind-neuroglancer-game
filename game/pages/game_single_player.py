@@ -9,7 +9,6 @@ from utils.neuroglancer import (
     create_default_viewer,
     get_annotations_from_state,
     get_viewer_url,
-    viewer_state_to_json_dump,
 )
 
 # Redirect to login if not logged in, otherwise show the navigation menu
@@ -23,36 +22,22 @@ else:
     st.error("No game options selected. Please select a game in the Home page.")
     st.stop()
 
-# Start the current round and set remaining time
-if "round_started" not in st.session_state:
-    st.session_state.current_round = 1
+def start_round(round_number: int):
+    """Initialize the game state for a new round."""
+    st.session_state.current_round = round_number
     st.session_state.seconds_left = game_options.get("time_per_round") * 60
     st.session_state.round_started = True
 
 
-# Game is running (round started), or between rounds, or finished all rounds
+# Initialize and start the first round
+if "round_started" not in st.session_state:
+    start_round(1)
+
+# Set the timer fragment to run every second if the round is started
 if st.session_state.round_started:
-    # Set the timer fragment to run every second
     run_every = Constants.GAME_STATUS_REFRESH_EVERY.value
-    # Create the initial neuroglancer viewer if needed
-    if "viewer_url" not in st.session_state:
-        viewer = create_default_viewer()
-        viewer_url = get_viewer_url(viewer)
-        st.session_state.viewer = viewer
-        st.session_state.viewer_url = viewer_url
-    # Display the neuroglancer viewer iframe
-    components.iframe(
-        src=st.session_state.viewer_url,
-        width=1000,
-        height=1000,
-    )
 else:
-    # Stop the timer fragment
     run_every = None
-    # Display the summary of the current round
-    st.write("Time is up for the current round!")
-    st.write("Game Summary so far:")
-    st.json(st.session_state.game_summary)
 
 @st.fragment(run_every=run_every)
 def update_game_status():
@@ -84,4 +69,25 @@ def update_game_status():
         st.rerun()
 
 
+# Display the game status and timer
 update_game_status()
+
+# Display the neuroglancer viewer or game summary
+if st.session_state.round_started:
+    # Create the initial neuroglancer viewer if needed
+    if "viewer_url" not in st.session_state:
+        viewer = create_default_viewer()
+        viewer_url = get_viewer_url(viewer)
+        st.session_state.viewer = viewer
+        st.session_state.viewer_url = viewer_url
+    # Display the neuroglancer viewer iframe
+    components.iframe(
+        src=st.session_state.viewer_url,
+        width=1000,
+        height=1000,
+    )
+else:
+    # Display the summary of the current round
+    st.write("Time is up for the current round!")
+    st.write("Game Summary so far:")
+    st.json(st.session_state.game_summary)
