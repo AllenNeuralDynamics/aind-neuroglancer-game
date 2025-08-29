@@ -1,5 +1,7 @@
 # AIND Neuroglancer Game
 
+The (work-in-progress!) app is deployed at http://neuroglancer-game.allenneuraldynamics-test.org/.
+
 This folder contains a POC for a Python-based Neuroglancer Game. The game runs as a Streamlit app with the Neuroglancer Python Integration.
 
 When a game is launched, the app creates new Neuroglancer Viewers in the same environment as the Streamlit app.

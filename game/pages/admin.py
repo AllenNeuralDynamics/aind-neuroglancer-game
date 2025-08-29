@@ -8,4 +8,6 @@ menu_with_redirect()
 sanity_check_role(f"pages/{Path(__file__).name}")
 
 st.title("Admin")
-st.markdown(f"You are currently logged with the role of {st.session_state.role}.")
+
+st.write("This page will allow admins to manage app settings.")
+st.write("Feature coming soon!")

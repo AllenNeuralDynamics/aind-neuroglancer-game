@@ -1,43 +1,62 @@
+"""Utility functions for rendering navigation and game menus."""
+
 import streamlit as st
-from config import Pages, UserRoles
+from config import Constants, Pages, UserRoles
+from utils.game import end_game
 
 
-def menu_with_redirect():
+def menu_with_redirect(show_game_menu: bool = False):
     """Redirect to main page if not logged in, otherwise render nav menu"""
     if "role" not in st.session_state or st.session_state.role is None:
         st.switch_page(Pages.LOGIN.value.link)
-    menu()
+    menu(show_game_menu)
 
 
-def menu():
+def menu(show_game_menu: bool = False):
     """Redirect to correct menu based on session state"""
     if "role" not in st.session_state or st.session_state.role is None:
-        login_menu()
+        _login_menu()
         return
-    authenticated_menu()
+    _authenticated_menu(show_game_menu)
 
 
-def authenticated_menu():
-    """Display navigation menu for authenticated users"""
+def _authenticated_menu(show_game_menu):
+    """Display navigation or game menu for authenticated users"""
     role = st.session_state.role
     if role not in UserRoles.__members__:
         st.error(f"Unknown role: {role}")
         return
-    user_role = UserRoles[role]
-    for page in user_role.value.allowed_pages:
-        st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
+    if show_game_menu:
+        # Game menu: game options, exit
+        if "game_options" in st.session_state:
+            game_options = st.session_state.game_options
+            st.sidebar.header(game_options["game_mode"], divider="rainbow")
+            for k, v in game_options.items():
+                if k != "game_mode":
+                    st.sidebar.caption(f"**{k.replace('_', ' ').title()}**: {v}")
+            st.sidebar.divider()
+        if st.sidebar.button(
+            "Exit Game", icon=":material/exit_to_app:", use_container_width=True
+        ):
+            end_game()
+            st.switch_page(Pages.HOME.value.link)
+    else:
+        # Nav menu: page links, logout
+        user_role = UserRoles[role]
+        st.sidebar.header(Constants.APP_NAME.value, divider="rainbow")
+        for page in user_role.value.allowed_pages:
+            st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
+        st.sidebar.divider()
+        st.sidebar.write(f"Logged in as **{role}**")
+        if st.sidebar.button("Log out", icon=":material/login:"):
+            st.session_state.role = None
+            st.switch_page(Pages.LOGIN.value.link)
 
-    # Logout button at bottom of sidebar
-    st.sidebar.markdown("---")
-    st.sidebar.write(f"Logged in as **{role}**")
-    if st.sidebar.button("Log out", icon=":material/login:"):
-        st.session_state.role = None
-        st.switch_page(Pages.LOGIN.value.link)
 
-
-def login_menu():
+def _login_menu():
     """Display navigation menu for unauthenticated users"""
     page = Pages.LOGIN.value
+    st.sidebar.header(Constants.APP_NAME.value, divider="rainbow")
     st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
 
 
@@ -49,8 +68,7 @@ def sanity_check_role(link: str):
         st.stop()
         return
     user_role = UserRoles[role]
-    allowed_pages = user_role.value.allowed_pages
-    if link not in [page.link for page in allowed_pages]:
-        st.error(f"You do not have permission to view this page.")
+    if link not in user_role.value.allowed_links:
+        st.error("You do not have permission to view this page.")
         st.stop()
         return
