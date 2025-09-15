@@ -62,3 +62,24 @@ class UserRole:
             mode.link for mode in self.allowed_game_modes if mode.link is not None
         ]
         return page_links + mode_links
+
+
+class User:
+    """Class to represent a user"""
+
+    username: str
+    email: str
+    role: UserRole
+
+    def __init__(self, username: str, email: str, role: UserRole):
+        self.username = username
+        self.email = email
+        self.role = role
+
+    def to_dict(self) -> dict:
+        """Convert user to dictionary representation"""
+        return {
+            "username": self.username,
+            "email": self.email,
+            "role": self.role.label,
+        }

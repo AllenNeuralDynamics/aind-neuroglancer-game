@@ -16,6 +16,8 @@ class Constants(Enum):
 
     GAME_STATUS_REFRESH_EVERY = 1  # seconds
 
+    DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE", "neuroglancer-game")
+
 
 class Pages(Enum):
     LOGIN = Page(link="streamlit_app.py", label="Log in", icon=":material/login:")

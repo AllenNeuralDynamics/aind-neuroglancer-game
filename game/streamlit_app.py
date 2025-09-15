@@ -1,5 +1,6 @@
 import streamlit as st
 from config import Constants, Pages, UserRoles
+from utils.dynamodb import initialize_db_managers
 from utils.menu import menu
 
 # wide layout
@@ -10,6 +11,10 @@ if "role" not in st.session_state:
     st.session_state.role = None
 if "username" not in st.session_state:
     st.session_state.username = None
+if "user_manager" or "game_session_manager" not in st.session_state:
+    user_manager, game_session_manager = initialize_db_managers()
+    st.session_state.user_manager = user_manager
+    st.session_state.game_session_manager = game_session_manager
 
 st.title(Constants.APP_NAME.value)
 
