@@ -1,5 +1,6 @@
 import streamlit as st
 from config import Constants, Pages, UserRoles
+from models import User
 from utils.dynamodb import initialize_db_managers
 from utils.menu import menu
 
@@ -9,8 +10,8 @@ st.set_page_config(layout="wide")
 # initialize session state
 if "role" not in st.session_state:
     st.session_state.role = None
-if "username" not in st.session_state:
-    st.session_state.username = None
+if "user" not in st.session_state:
+    st.session_state.user = None
 if "user_manager" or "game_session_manager" not in st.session_state:
     user_manager, game_session_manager = initialize_db_managers()
     st.session_state.user_manager = user_manager
@@ -35,11 +36,16 @@ if role != UserRoles.GUEST.name:
 if st.button("Log in", type="primary"):
     if role == UserRoles.GUEST.name:
         st.session_state.role = role
-        st.session_state.username = UserRoles.GUEST.value.label
+        st.session_state.user = User(
+            username=UserRoles.GUEST.value.label,
+            email="",
+            role=UserRoles.GUEST.value,
+        )
         st.switch_page(Pages.HOME.value.link)
     elif username and username.strip():
         st.session_state.role = role
-        st.session_state.username = username.strip()
+        user = st.session_state.user_manager.get_user(username.strip())
+        st.session_state.user = user
         st.switch_page(Pages.HOME.value.link)
     else:
         st.error("Please enter your username")

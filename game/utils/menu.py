@@ -2,6 +2,7 @@
 
 import streamlit as st
 from config import Constants, Pages, UserRoles
+from models import User
 from utils.game import end_game
 
 
@@ -47,10 +48,11 @@ def _authenticated_menu(show_game_menu):
         for page in user_role.value.allowed_pages:
             st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
         st.sidebar.divider()
-        st.sidebar.write(f"Logged in as **{st.session_state.get('username') or role}**")
+        user: User | None = st.session_state.get("user")
+        st.sidebar.write(f"Logged in as **{user.username if user else role}**")
         if st.sidebar.button("Log out", icon=":material/login:"):
             st.session_state.role = None
-            st.session_state.username = None
+            st.session_state.user = None
             st.switch_page(Pages.LOGIN.value.link)
 
 
