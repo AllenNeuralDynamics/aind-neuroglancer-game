@@ -1,5 +1,7 @@
 """Utility clients for interacting with DynamoDB."""
 
+from datetime import datetime
+
 from config import Constants
 from models import User
 
@@ -32,10 +34,14 @@ class UserManager:
         )
         print(f"Retrieved user data from dynamodb: {user_data}")
         if user_data:
+            join_date = user_data.get("join_date")
+            if join_date:
+                join_date = datetime.fromisoformat(join_date)
             return User(
                 username=user_data.get("username", ""),
                 email=user_data.get("email", ""),
                 role=user_data.get("role", ""),
+                join_date=join_date,
             )
         return None
 

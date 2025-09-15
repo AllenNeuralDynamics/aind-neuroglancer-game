@@ -1,5 +1,6 @@
 """Models for the game app"""
 
+from datetime import datetime
 from typing import List, Optional
 
 
@@ -70,11 +71,19 @@ class User:
     username: str
     email: str
     role: UserRole
+    join_date: Optional[datetime]
 
-    def __init__(self, username: str, email: str, role: UserRole):
+    def __init__(
+        self,
+        username: str,
+        email: str,
+        role: UserRole,
+        join_date: Optional[datetime] = None,
+    ):
         self.username = username
         self.email = email
         self.role = role
+        self.join_date = datetime.now() if join_date is None else join_date
 
     def to_dict(self) -> dict:
         """Convert user to dictionary representation"""
@@ -82,4 +91,5 @@ class User:
             "username": self.username,
             "email": self.email,
             "role": self.role.label,
+            "join_date": self.join_date.isoformat() if self.join_date else None,
         }
