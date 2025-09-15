@@ -7,7 +7,9 @@ from utils.menu import menu_with_redirect, sanity_check_role
 menu_with_redirect()
 sanity_check_role(f"pages/{Path(__file__).name}")
 
-st.title("Account")
+st.title("My Account")
+
+st.subheader(f"Welcome, {st.session_state.get('username', 'unknown user')}!")
 
 st.write("This page will allow users to manage their account settings.")
 st.write("Feature coming soon!")

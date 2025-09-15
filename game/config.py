@@ -20,7 +20,7 @@ class Constants(Enum):
 class Pages(Enum):
     LOGIN = Page(link="streamlit_app.py", label="Log in", icon=":material/login:")
     ACCOUNT = Page(
-        link="pages/account.py", label="Account", icon=":material/account_circle:"
+        link="pages/account.py", label="My Account", icon=":material/account_circle:"
     )
     ADMIN = Page(
         link="pages/admin.py", label="Admin", icon=":material/manage_accounts:"
@@ -99,8 +99,9 @@ class UserRoles(Enum):
         allowed_pages=_USER_PAGES,
         allowed_game_modes=_ALL_ALLOWED_GAME_MODES,
     )
-    ADMIN = UserRole(
-        label="admin",
-        allowed_pages=_ADMIN_PAGES,
-        allowed_game_modes=_ALL_ALLOWED_GAME_MODES,
-    )
+    # NOTE: temporarily disable admin role since there are no admin features
+    # ADMIN = UserRole(
+    #     label="admin",
+    #     allowed_pages=_ADMIN_PAGES,
+    #     allowed_game_modes=_ALL_ALLOWED_GAME_MODES,
+    # )

@@ -47,9 +47,10 @@ def _authenticated_menu(show_game_menu):
         for page in user_role.value.allowed_pages:
             st.sidebar.page_link(page=page.link, label=page.label, icon=page.icon)
         st.sidebar.divider()
-        st.sidebar.write(f"Logged in as **{role}**")
+        st.sidebar.write(f"Logged in as **{st.session_state.get('username') or role}**")
         if st.sidebar.button("Log out", icon=":material/login:"):
             st.session_state.role = None
+            st.session_state.username = None
             st.switch_page(Pages.LOGIN.value.link)
 
 
