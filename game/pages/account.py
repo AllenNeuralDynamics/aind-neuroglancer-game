@@ -22,3 +22,8 @@ else:
     st.text_input("Email", value=user.email, disabled=True)
     st.text_input("Role", value=user.role.label, disabled=True)
 
+    # Stub metrics - to be replaced with real data later
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Total games played", 0)
+    col2.metric("Total annotations made", 0)
+    col3.metric("Average accuracy", "0%")
