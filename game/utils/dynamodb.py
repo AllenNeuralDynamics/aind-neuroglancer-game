@@ -1,8 +1,10 @@
 """Utility clients for interacting with DynamoDB."""
 
 from datetime import datetime
+from typing import Any, Optional
 
-from config import Constants
+import boto3
+from config import Constants, UserRoles
 from models import User
 
 
@@ -10,11 +12,17 @@ class DynamoDbClient:
     """Client for interacting with DynamoDB."""
 
     def __init__(self):
-        pass
+        # Use dynamoDB resource which has higher level abstraction than client
+        self._dynamodb = boto3.resource("dynamodb")
+        self._table = self._dynamodb.Table(Constants.DYNAMODB_TABLE.value)
 
-    def get_item(self, table_name: str, key: dict) -> dict | None:
-        """Retrieve an item from a DynamoDB table."""
-        pass
+    def get_item(self, key: dict) -> dict | None:
+        """
+        Retrieve an item from a DynamoDB table given the primary key(s),
+        e.g. {"pk": "value", "sk": "value"}
+        """
+        response = self._table.get_item(Key=key)
+        return response.get("Item")
 
     def put_item(self, table_name: str, item: dict) -> None:
         """Put an item into a DynamoDB table."""
@@ -29,9 +37,8 @@ class UserManager:
 
     def get_user(self, username: str) -> User | None:
         """Retrieve user data by user ID."""
-        user_data = self.db_client.get_item(
-            Constants.DYNAMODB_TABLE.value, {"username": username}
-        )
+        key = {"PK": username, "SK": "PROFILE"}
+        user_data = self.db_client.get_item(key)
         print(f"Retrieved user data from dynamodb: {user_data}")
         if user_data:
             join_date = user_data.get("join_date")
@@ -40,7 +47,7 @@ class UserManager:
             return User(
                 username=user_data.get("username", ""),
                 email=user_data.get("email", ""),
-                role=user_data.get("role", ""),
+                role=user_data.get("EntityType", ""),
                 join_date=join_date,
             )
         return None
@@ -61,9 +68,8 @@ class GameSessionManager:
 
     def get_session(self, session_id: str) -> dict | None:
         """Retrieve game session data by session ID."""
-        return self.db_client.get_item(
-            Constants.DYNAMODB_TABLE.value, {"session_id": session_id}
-        )
+        key = {"session_id": session_id}
+        return self.db_client.get_item(key)
 
     def create_session(self, session_data: dict) -> None:
         """Create a new game session in the database."""

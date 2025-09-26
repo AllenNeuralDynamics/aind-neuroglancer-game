@@ -39,7 +39,7 @@ if st.button("Log in", type="primary"):
         st.session_state.user = User(
             username=UserRoles.GUEST.value.label,
             email="",
-            role=UserRoles.GUEST.value,
+            role=UserRoles.GUEST.value.label,
         )
         st.switch_page(Pages.HOME.value.link)
     elif username and username.strip():
@@ -79,7 +79,7 @@ def create_user(role: str):
             user = User(
                 username=username.strip(),
                 email=email.strip(),
-                role=UserRoles[role].value,
+                role=UserRoles[role].value.label,
             )
             created_user = st.session_state.user_manager.create_user(user)
             st.session_state.user = created_user

@@ -16,7 +16,7 @@ class Constants(Enum):
 
     GAME_STATUS_REFRESH_EVERY = 1  # seconds
 
-    DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE", "neuroglancer-game")
+    DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE", "neuroglancer-game-dev")
 
 
 class Pages(Enum):

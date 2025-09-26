@@ -20,7 +20,7 @@ else:
     # show user info from session state - username, email
     st.text_input("Username", value=user.username, disabled=True)
     st.text_input("Email", value=user.email, disabled=True)
-    st.text_input("Role", value=user.role.label, disabled=True)
+    st.text_input("Role", value=user.role, disabled=True)
     if user.join_date:
         st.text_input("Member since", value=user.join_date.isoformat(), disabled=True)
     else:
