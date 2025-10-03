@@ -1,5 +1,6 @@
 """Models for the game app"""
 
+from datetime import datetime
 from typing import List, Optional
 
 
@@ -62,3 +63,36 @@ class UserRole:
             mode.link for mode in self.allowed_game_modes if mode.link is not None
         ]
         return page_links + mode_links
+
+
+class User:
+    """Class to represent a user"""
+
+    username: str
+    email: str
+    role: str
+    join_date: Optional[datetime]
+
+    def __init__(
+        self,
+        username: str,
+        email: str,
+        role: str,
+        join_date: Optional[datetime] = None,
+    ):
+        self.username = username
+        self.email = email
+        self.role = role
+        self.join_date = join_date
+
+    def to_dynamodb_item(self) -> dict:
+        """Convert user to dictionary representation"""
+        return {
+            # do not change the partion and sort key names
+            "PartitionKey": self.username,
+            "SortKey": "PROFILE",
+            # other attributes
+            "email": self.email,
+            "role": self.role,
+            "join_date": self.join_date.isoformat() if self.join_date else None,
+        }
