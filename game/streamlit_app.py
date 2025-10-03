@@ -59,10 +59,9 @@ if st.button("Log in", type="primary"):
 # Create account button with validation
 
 
-@st.dialog("Game Options")
+@st.dialog("Create Account")
 def create_user(role: str):
     """Dialog for new user account"""
-    st.header(f"Create {role} account", divider="rainbow")
     # TODO: remove warning once auth is implemented
     st.warning(
         "Please DO NOT provide any sensitive info! Authentication is not implemented yet!"
@@ -86,6 +85,7 @@ def create_user(role: str):
             if existing_user:
                 st.error("Username already taken. Please choose a different username.")
                 return
+            # TODO: verify email is not already used?
             user = User(
                 username=username.strip(),
                 email=email.strip(),

@@ -1,10 +1,9 @@
 """Utility clients for interacting with DynamoDB."""
 
 from datetime import datetime
-from typing import Any, Optional
 
 import boto3
-from config import Constants, UserRoles
+from config import Constants
 from models import User
 
 
