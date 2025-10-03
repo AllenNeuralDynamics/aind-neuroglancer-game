@@ -85,10 +85,13 @@ class User:
         self.role = role
         self.join_date = join_date
 
-    def to_dict(self) -> dict:
+    def to_dynamodb_item(self) -> dict:
         """Convert user to dictionary representation"""
         return {
-            "username": self.username,
+            # do not change the partion and sort key names
+            "PartitionKey": self.username,
+            "SortKey": "PROFILE",
+            # other attributes
             "email": self.email,
             "role": self.role,
             "join_date": self.join_date.isoformat() if self.join_date else None,

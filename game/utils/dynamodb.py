@@ -19,14 +19,14 @@ class DynamoDbClient:
     def get_item(self, key: dict) -> dict | None:
         """
         Retrieve an item from a DynamoDB table given the primary key(s),
-        e.g. {"pk": "value", "sk": "value"}
+        e.g. {"PartitionKey": "value", "SortKey": "value"}
         """
         response = self._table.get_item(Key=key)
         return response.get("Item")
 
-    def put_item(self, table_name: str, item: dict) -> None:
+    def put_item(self, item: dict) -> None:
         """Put an item into a DynamoDB table."""
-        pass
+        self._table.put_item(Item=item)
 
 
 class UserManager:
@@ -37,7 +37,8 @@ class UserManager:
 
     def get_user(self, username: str) -> User | None:
         """Retrieve user data by user ID."""
-        key = {"PK": username, "SK": "PROFILE"}
+        # NOTE: key is a dictionary that must contain the partion and sort keys
+        key = {"PartitionKey": username, "SortKey": "PROFILE"}
         user_data = self.db_client.get_item(key)
         print(f"Retrieved user data from dynamodb: {user_data}")
         if user_data:
@@ -45,18 +46,18 @@ class UserManager:
             if join_date:
                 join_date = datetime.fromisoformat(join_date)
             return User(
-                username=user_data.get("username", ""),
+                username=user_data.get("PartitionKey", ""),
                 email=user_data.get("email", ""),
-                role=user_data.get("EntityType", ""),
+                role=user_data.get("role", ""),
                 join_date=join_date,
             )
         return None
 
     def create_user(self, user: User) -> User:
         """Create a new user in the database."""
-        user_data = user.to_dict()
+        user_data = user.to_dynamodb_item()
         print(f"Saving user data to dynamodb: {user_data}")
-        self.db_client.put_item(Constants.DYNAMODB_TABLE.value, user_data)
+        self.db_client.put_item(user_data)
         return user
 
 

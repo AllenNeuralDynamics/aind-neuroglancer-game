@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import streamlit as st
 from config import Constants, Pages, UserRoles
 from models import User
@@ -44,9 +46,13 @@ if st.button("Log in", type="primary"):
         st.switch_page(Pages.HOME.value.link)
     elif username and username.strip():
         st.session_state.role = role
+        # Verify user exists and log in
         user = st.session_state.user_manager.get_user(username.strip())
-        st.session_state.user = user
-        st.switch_page(Pages.HOME.value.link)
+        if not user:
+            st.error("Username not found. Please try again or create an account.")
+        else:
+            st.session_state.user = user
+            st.switch_page(Pages.HOME.value.link)
     else:
         st.error("Please enter your username")
 
@@ -75,13 +81,19 @@ def create_user(role: str):
 
     if st.button("Create & Log in", type="primary", use_container_width=True):
         if username and username.strip() and email and email.strip():
-            st.session_state.role = role
+            # Verify if username does not already exist
+            existing_user = st.session_state.user_manager.get_user(username.strip())
+            if existing_user:
+                st.error("Username already taken. Please choose a different username.")
+                return
             user = User(
                 username=username.strip(),
                 email=email.strip(),
                 role=UserRoles[role].value.label,
+                join_date=datetime.now(),
             )
             created_user = st.session_state.user_manager.create_user(user)
+            st.session_state.role = role
             st.session_state.user = created_user
             st.switch_page(Pages.HOME.value.link)
         else:
