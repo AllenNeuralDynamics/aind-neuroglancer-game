@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import List, Optional
-
+from uuid import uuid4
 
 class Page:
     """Class to represent a page in the app"""
@@ -110,3 +110,50 @@ class User:
             role=user_data.get("role", ""),
             join_date=join_date,
         )
+
+
+class GameSession:
+    """Class to represent a game session"""
+
+    session_id: str
+    username: str
+    status: str
+    # game options (configured by user)
+    game_mode: str
+    num_rounds: int
+    time_per_round: int
+    # game stats
+    start_time: Optional[datetime]
+    end_time: Optional[datetime]
+    total_annotations: Optional[int]
+    s3_location: Optional[str]
+
+    def __init__(
+        self,
+        username: str,
+        game_mode: str,
+        num_rounds: int,
+        time_per_round: int,
+        status: str = "not_started",
+        session_id: Optional[str] = None,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
+        total_annotations: Optional[int] = None,
+        s3_location: Optional[str] = None,
+    ):
+        """Initialize a GameSession instance"""
+
+        self.username = username
+        self.game_mode = game_mode
+        self.num_rounds = num_rounds
+        self.time_per_round = time_per_round
+        self.status = status
+        self.start_time = start_time
+        self.end_time = end_time
+        self.total_annotations = total_annotations
+        self.s3_location = s3_location
+
+        if session_id:
+            self.session_id = session_id
+        else:
+            self.session_id = "SESSION_" + uuid4().hex
