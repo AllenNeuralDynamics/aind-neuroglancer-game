@@ -96,3 +96,17 @@ class User:
             "role": self.role,
             "join_date": self.join_date.isoformat() if self.join_date else None,
         }
+    
+    @staticmethod
+    def from_dynamodb_item(user_data: dict) -> "User":
+        """Create a User object from a DynamoDB item"""
+
+        join_date = user_data.get("join_date")
+        if join_date:
+            join_date = datetime.fromisoformat(join_date)
+        return User(
+            username=user_data.get("PartitionKey", ""),
+            email=user_data.get("email", ""),
+            role=user_data.get("role", ""),
+            join_date=join_date,
+        )

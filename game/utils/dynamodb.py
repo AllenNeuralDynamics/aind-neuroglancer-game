@@ -1,6 +1,6 @@
 """Utility clients for interacting with DynamoDB."""
 
-from datetime import datetime
+from typing import Optional
 
 import boto3
 from config import Constants
@@ -15,7 +15,7 @@ class DynamoDbClient:
         self._dynamodb = boto3.resource("dynamodb")
         self._table = self._dynamodb.Table(Constants.DYNAMODB_TABLE.value)
 
-    def get_item(self, key: dict) -> dict | None:
+    def get_item(self, key: dict) -> Optional[dict]:
         """
         Retrieve an item from a DynamoDB table given the primary key(s),
         e.g. {"PartitionKey": "value", "SortKey": "value"}
@@ -40,17 +40,7 @@ class UserManager:
         key = {"PartitionKey": username, "SortKey": "PROFILE"}
         user_data = self.db_client.get_item(key)
         print(f"Retrieved user data from dynamodb: {user_data}")
-        if user_data:
-            join_date = user_data.get("join_date")
-            if join_date:
-                join_date = datetime.fromisoformat(join_date)
-            return User(
-                username=user_data.get("PartitionKey", ""),
-                email=user_data.get("email", ""),
-                role=user_data.get("role", ""),
-                join_date=join_date,
-            )
-        return None
+        return User.from_dynamodb_item(user_data) if user_data else None
 
     def create_user(self, user: User) -> User:
         """Create a new user in the database."""
