@@ -35,20 +35,21 @@ def show_game_options(game_mode: GameMode):
         step=1,
         help="How long each round will last",
     )
-    allow_movement = st.radio(
-        "Allow move",
-        options=[True, False],
-        format_func=lambda x: "Yes" if x else "No",
-        index=0,
-        help="Whether you can move around the brain during the game.",
-    )
-    allow_zoom = st.radio(
-        "Allow zoom",
-        options=[True, False],
-        format_func=lambda x: "Yes" if x else "No",
-        index=0,
-        help="Whether you can zoom in/out of the brain during the game.",
-    )
+    # Example additional options
+    # allow_movement = st.radio(
+    #     "Allow move",
+    #     options=[True, False],
+    #     format_func=lambda x: "Yes" if x else "No",
+    #     index=0,
+    #     help="Whether you can move around the brain during the game.",
+    # )
+    # allow_zoom = st.radio(
+    #     "Allow zoom",
+    #     options=[True, False],
+    #     format_func=lambda x: "Yes" if x else "No",
+    #     index=0,
+    #     help="Whether you can zoom in/out of the brain during the game.",
+    # )
     # start game button
     if st.button("Start game", use_container_width=True):
         # save game options to session state
@@ -56,8 +57,8 @@ def show_game_options(game_mode: GameMode):
             "game_mode": game_mode.label,
             "num_rounds": num_rounds,
             "time_per_round": time_per_round,
-            "allow_movement": allow_movement,
-            "allow_zoom": allow_zoom,
+            # "allow_movement": allow_movement,
+            # "allow_zoom": allow_zoom,
         }
         # redirect to the game page
         if game_mode.link is None:
