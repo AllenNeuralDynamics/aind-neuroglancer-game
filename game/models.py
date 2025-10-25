@@ -169,3 +169,44 @@ class GameSession:
         self.status = "completed"
         self.end_time = datetime.now()
         self.total_annotations = total_annotations
+
+    def to_dynamodb_item(self) -> dict:
+        """Convert user to dictionary representation"""
+        return {
+            # do not change the partion and sort key names
+            "PartitionKey": self.username,
+            "SortKey": self.session_id,
+            # other attributes
+            "status": self.status,
+            "game_mode": self.game_mode,
+            "num_rounds": self.num_rounds,
+            "time_per_round": self.time_per_round,
+            "start_time": self.start_time.isoformat() if self.start_time else None,
+            "end_time": self.end_time.isoformat() if self.end_time else None,
+            "total_annotations": self.total_annotations,
+            "s3_location": self.s3_location,
+        }
+
+    @staticmethod
+    def from_dynamodb_item(session_data: dict) -> "GameSession":
+        """Create a GameSession object from a DynamoDB item"""
+
+        start_time = session_data.get("start_time")
+        if start_time:
+            start_time = datetime.fromisoformat(start_time)
+        end_time = session_data.get("end_time")
+        if end_time:
+            end_time = datetime.fromisoformat(end_time)
+        session = GameSession(
+            username=session_data.get("PartitionKey", ""),
+            game_mode=session_data.get("game_mode", ""),
+            num_rounds=session_data.get("num_rounds", 0),
+            time_per_round=session_data.get("time_per_round", 0),
+            status=session_data.get("status", ""),
+            session_id=session_data.get("SortKey", ""),
+            start_time=start_time,
+            end_time=end_time,
+            total_annotations=session_data.get("total_annotations"),
+            s3_location=session_data.get("s3_location")
+        )
+        return session

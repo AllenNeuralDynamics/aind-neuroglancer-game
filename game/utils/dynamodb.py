@@ -4,7 +4,7 @@ from typing import Optional
 
 import boto3
 from config import Constants
-from models import User
+from models import User, GameSession
 
 
 class DynamoDbClient:
@@ -56,14 +56,20 @@ class GameSessionManager:
     def __init__(self, db_client: DynamoDbClient):
         self.db_client = db_client
 
-    def get_session(self, session_id: str) -> dict | None:
+    def get_session(self, username: str, session_id: str) -> Optional[GameSession]:
         """Retrieve game session data by session ID."""
-        key = {"session_id": session_id}
-        return self.db_client.get_item(key)
+        # NOTE: key is a dictionary that must contain the partion and sort keys
+        key = {"PartitionKey": username, "SortKey": session_id}
+        session_data = self.db_client.get_item(key)
+        print(f"Retrieved game session data from dynamodb: {session_data}")
+        return GameSession.from_dynamodb_item(session_data) if session_data else None
 
-    def create_session(self, session_data: dict) -> None:
+    def create_session(self, session: GameSession) -> GameSession:
         """Create a new game session in the database."""
-        self.db_client.put_item(Constants.DYNAMODB_TABLE.value, session_data)
+        session_data = session.to_dynamodb_item()
+        print(f"Saving session data to dynamodb: {session_data}")
+        self.db_client.put_item(session_data)
+        return session
 
 
 def initialize_db_managers() -> tuple[UserManager, GameSessionManager]:

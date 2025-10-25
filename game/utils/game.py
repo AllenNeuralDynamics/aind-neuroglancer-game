@@ -84,6 +84,8 @@ def start_game():
         st.session_state.game_session = game_session
         # Start the game with first round
         game_session.start_game()
+        # Save the active game session to db
+        st.session_state.game_session_manager.create_session(game_session)
         start_round(1, game_options.get("time_per_round"))
 
 
@@ -97,6 +99,8 @@ def end_game():
             for summary in st.session_state.get("game_summary", {}).values()
         )
         st.session_state.game_session.end_game(total_annotations)
+        # Save the completed game session to db
+        st.session_state.game_session_manager.create_session(st.session_state.game_session)
     # TODO: delete the viewer instance if needed
     keys_to_clear = [
         "current_round",
