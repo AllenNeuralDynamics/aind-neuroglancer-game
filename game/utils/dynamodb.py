@@ -4,7 +4,7 @@ from typing import Optional
 
 import boto3
 from config import Constants
-from models import User, GameSession
+from models import GameSession, User
 
 
 class DynamoDbClient:

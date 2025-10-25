@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import uuid4
 
+
 class Page:
     """Class to represent a page in the app"""
 
@@ -96,7 +97,7 @@ class User:
             "role": self.role,
             "join_date": self.join_date.isoformat() if self.join_date else None,
         }
-    
+
     @staticmethod
     def from_dynamodb_item(user_data: dict) -> "User":
         """Create a User object from a DynamoDB item"""
@@ -207,6 +208,6 @@ class GameSession:
             start_time=start_time,
             end_time=end_time,
             total_annotations=session_data.get("total_annotations"),
-            s3_location=session_data.get("s3_location")
+            s3_location=session_data.get("s3_location"),
         )
         return session

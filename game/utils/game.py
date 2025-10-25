@@ -15,8 +15,8 @@ These should be cleared at the end of the game or when the user exits the game
 
 import streamlit as st
 from config import Constants
-from utils.neuroglancer import get_annotations_from_state
 from models import GameSession
+from utils.neuroglancer import get_annotations_from_state
 
 ######### Get game state from session_state #########
 
@@ -100,7 +100,9 @@ def end_game():
         )
         st.session_state.game_session.end_game(total_annotations)
         # Save the completed game session to db
-        st.session_state.game_session_manager.create_session(st.session_state.game_session)
+        st.session_state.game_session_manager.create_session(
+            st.session_state.game_session
+        )
     # TODO: delete the viewer instance if needed
     keys_to_clear = [
         "current_round",
