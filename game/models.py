@@ -157,3 +157,15 @@ class GameSession:
             self.session_id = session_id
         else:
             self.session_id = "SESSION_" + uuid4().hex
+
+    def start_game(self):
+        """Mark the game session as started"""
+        self.status = "active"
+        self.start_time = datetime.now()
+        self.total_annotations = 0
+
+    def end_game(self, total_annotations: int):
+        """Mark the game session as ended"""
+        self.status = "completed"
+        self.end_time = datetime.now()
+        self.total_annotations = total_annotations
