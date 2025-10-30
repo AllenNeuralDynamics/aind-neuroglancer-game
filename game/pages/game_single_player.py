@@ -5,10 +5,10 @@ import streamlit as st
 import streamlit.components.v1 as components
 from config import Constants, Pages
 from utils.game import (
-    save_game,
     clear_game,
     get_game_options_from_session_state,
     process_round_timer,
+    save_game,
     start_game,
     start_round,
 )
@@ -95,9 +95,7 @@ else:
     if current_round < num_rounds:
         # User has more rounds to play but still save current progress to db
         save_game(
-            total_annotations=total_num_annotations,
-            end_game=False,
-            is_abandoned=False
+            total_annotations=total_num_annotations, end_game=False, is_abandoned=False
         )
         # Display round summary and next round button
         st.info(f"You made {current_num_annotations} annotations this round.")
@@ -110,9 +108,7 @@ else:
     else:
         # User has completed all rounds. Save the game to Db
         save_game(
-            total_annotations=total_num_annotations,
-            end_game=True,
-            is_abandoned=False
+            total_annotations=total_num_annotations, end_game=True, is_abandoned=False
         )
         # Display final summary and options
         st.balloons()

@@ -89,7 +89,9 @@ def start_game():
         start_round(1, game_options.get("time_per_round"))
 
 
-def save_game(total_annotations: int = 0, end_game: bool = False, is_abandoned: bool = False):
+def save_game(
+    total_annotations: int = 0, end_game: bool = False, is_abandoned: bool = False
+):
     """
     Save the current game session to the database.
     Optionally also mark the game as ended or abandoned.
@@ -106,6 +108,7 @@ def save_game(total_annotations: int = 0, end_game: bool = False, is_abandoned: 
         st.session_state.game_session_manager.upsert_session(
             st.session_state.game_session
         )
+
 
 def clear_game():
     """Clear game state from session_state."""
