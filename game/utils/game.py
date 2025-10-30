@@ -85,24 +85,30 @@ def start_game():
         # Start the game with first round
         game_session.start_game()
         # Save the active game session to db
-        st.session_state.game_session_manager.create_session(game_session)
+        st.session_state.game_session_manager.upsert_session(game_session)
         start_round(1, game_options.get("time_per_round"))
 
 
-def end_game():
-    """Clear game state from session_state."""
-    # Mark the game session as ended
+def save_game(total_annotations: int = 0, end_game: bool = False, is_abandoned: bool = False):
+    """
+    Save the current game session to the database.
+    Optionally also mark the game as ended or abandoned.
+    If game is abandoned, do not update total annotations.
+    """
     if "game_session" in st.session_state:
-        # NOTE: summary is only calculated at end of each round
-        total_annotations = sum(
-            summary["num_annotations"]
-            for summary in st.session_state.get("game_summary", {}).values()
-        )
-        st.session_state.game_session.end_game(total_annotations)
-        # Save the completed game session to db
-        st.session_state.game_session_manager.create_session(
+        if end_game and not is_abandoned:
+            st.session_state.game_session.end_game(total_annotations)
+        elif end_game and is_abandoned:
+            st.session_state.game_session.abandon_game()
+        else:
+            st.session_state.game_session.update_total_annotations(total_annotations)
+        # Save the updated game session to db
+        st.session_state.game_session_manager.upsert_session(
             st.session_state.game_session
         )
+
+def clear_game():
+    """Clear game state from session_state."""
     # TODO: delete the viewer instance if needed
     keys_to_clear = [
         "current_round",

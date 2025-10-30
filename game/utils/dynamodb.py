@@ -42,8 +42,8 @@ class UserManager:
         print(f"Retrieved user data from dynamodb: {user_data}")
         return User.from_dynamodb_item(user_data) if user_data else None
 
-    def create_user(self, user: User) -> User:
-        """Create a new user in the database."""
+    def upsert_user(self, user: User) -> User:
+        """Add or update a user in the database."""
         user_data = user.to_dynamodb_item()
         print(f"Saving user data to dynamodb: {user_data}")
         self.db_client.put_item(user_data)
@@ -64,8 +64,8 @@ class GameSessionManager:
         print(f"Retrieved game session data from dynamodb: {session_data}")
         return GameSession.from_dynamodb_item(session_data) if session_data else None
 
-    def create_session(self, session: GameSession) -> GameSession:
-        """Create a new game session in the database."""
+    def upsert_session(self, session: GameSession) -> GameSession:
+        """Add or update a game session in the database."""
         session_data = session.to_dynamodb_item()
         print(f"Saving session data to dynamodb: {session_data}")
         self.db_client.put_item(session_data)

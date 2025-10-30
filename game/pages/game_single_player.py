@@ -5,7 +5,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 from config import Constants, Pages
 from utils.game import (
-    end_game,
+    save_game,
+    clear_game,
     get_game_options_from_session_state,
     process_round_timer,
     start_game,
@@ -87,22 +88,33 @@ else:
     ]
     num_rounds = GAME_OPTIONS.get("num_rounds")
     total_num_annotations = sum(
-        [
-            st.session_state.game_summary[r]["num_annotations"]
-            for r in st.session_state.game_summary
-        ]
+        summary["num_annotations"]
+        for summary in st.session_state.get("game_summary", {}).values()
     )
     st.subheader(f"Time's up for Round {current_round}/{num_rounds}!")
     if current_round < num_rounds:
+        # User has more rounds to play but still save current progress to db
+        save_game(
+            total_annotations=total_num_annotations,
+            end_game=False,
+            is_abandoned=False
+        )
+        # Display round summary and next round button
         st.info(f"You made {current_num_annotations} annotations this round.")
         with st.expander("Show current summary"):
             st.json(st.session_state.game_summary)
-        # Button to start the next round
         if st.button("Start Next Round", type="primary"):
             start_round(
                 st.session_state.current_round + 1, GAME_OPTIONS.get("time_per_round")
             )
     else:
+        # User has completed all rounds. Save the game to Db
+        save_game(
+            total_annotations=total_num_annotations,
+            end_game=True,
+            is_abandoned=False
+        )
+        # Display final summary and options
         st.balloons()
         st.success(
             f"Thank you for playing! You made a total of {total_num_annotations} annotations."
@@ -116,5 +128,5 @@ else:
         if st.button("Download Results"):
             st.info("Feature coming soon!")
         if st.button("Exit Game"):
-            end_game()
+            clear_game()
             st.switch_page(Pages.HOME.value.link)

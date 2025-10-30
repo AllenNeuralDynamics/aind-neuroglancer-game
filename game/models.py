@@ -165,11 +165,20 @@ class GameSession:
         self.start_time = datetime.now()
         self.total_annotations = 0
 
+    def update_total_annotations(self, total_annotations: int):
+        """Update the total number of annotations made in the game session"""
+        self.total_annotations = total_annotations
+
     def end_game(self, total_annotations: int):
         """Mark the game session as ended"""
         self.status = "completed"
         self.end_time = datetime.now()
         self.total_annotations = total_annotations
+
+    def abandon_game(self):
+        """Mark the game session as abandoned"""
+        self.status = "abandoned"
+        self.end_time = datetime.now()
 
     def to_dynamodb_item(self) -> dict:
         """Convert user to dictionary representation"""
