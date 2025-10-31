@@ -94,6 +94,25 @@ class GameSessionManager:
         self.db_client.put_item(session_data)
         return session
 
+    def count_sessions_for_user(self, username: str) -> int:
+        """Count the number of sessions for a given user in the database."""
+        response = self.db_client.query_items(
+            key_condition_expression=Key("PartitionKey").eq(username)
+            & Key("SortKey").begins_with("SESSION"),
+            select="COUNT",
+        )
+        return response.get("Count", 0)
+
+    def get_total_annotations_for_user(self, username: str) -> int:
+        """Get the total number of annotations made by a user across all sessions."""
+        response = self.db_client.query_items(
+            key_condition_expression=Key("PartitionKey").eq(username)
+            & Key("SortKey").begins_with("SESSION"),
+            projection_expression="total_annotations",
+        )
+        items = response.get("Items", [])
+        total_annotations = sum(int(item.get("total_annotations", 0)) for item in items)
+        return total_annotations
 
 def initialize_db_managers() -> tuple[UserManager, GameSessionManager]:
     """Initialize and return database managers"""
