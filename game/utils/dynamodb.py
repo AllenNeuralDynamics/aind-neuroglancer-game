@@ -1,8 +1,9 @@
 """Utility clients for interacting with DynamoDB."""
 
-from typing import Optional
+from typing import Any, Optional
 
 import boto3
+from boto3.dynamodb.conditions import Key
 from config import Constants
 from models import GameSession, User
 
@@ -26,6 +27,28 @@ class DynamoDbClient:
     def put_item(self, item: dict) -> None:
         """Put an item into a DynamoDB table."""
         self._table.put_item(Item=item)
+
+    def query_items(
+        self,
+        key_condition_expression: Any,
+        filter_expression: Optional[Any] = None,
+        select: Optional[str] = None,
+        projection_expression: Optional[str] = None,
+    ) -> dict:
+        """Query items from a DynamoDB table using a key condition expression
+        and optional filter expression.
+        """
+        params = {
+            "KeyConditionExpression": key_condition_expression,
+        }
+        if filter_expression:
+            params["FilterExpression"] = filter_expression
+        if select:
+            params["Select"] = select
+        if projection_expression:
+            params["ProjectionExpression"] = projection_expression
+        response = self._table.query(**params)
+        return response
 
 
 class UserManager:
