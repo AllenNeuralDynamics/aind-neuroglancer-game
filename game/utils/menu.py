@@ -3,7 +3,7 @@
 import streamlit as st
 from config import Constants, Pages, UserRoles
 from models import User
-from utils.game import end_game
+from utils.game import clear_game, save_game
 
 
 def menu_with_redirect(show_game_menu: bool = False):
@@ -39,7 +39,9 @@ def _authenticated_menu(show_game_menu):
         if st.sidebar.button(
             "Exit Game", icon=":material/exit_to_app:", use_container_width=True
         ):
-            end_game()
+            # Ends any current game session and saves to db
+            save_game(end_game=True, is_abandoned=True)
+            clear_game()
             st.switch_page(Pages.HOME.value.link)
     else:
         # Nav menu: page links, logout

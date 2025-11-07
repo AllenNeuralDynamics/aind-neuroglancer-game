@@ -26,8 +26,17 @@ else:
     else:
         st.text_input("Member since", value="N/A", disabled=True)
 
-    # Stub metrics - to be replaced with real data later
+    # Basic metrics
+    total_games = st.session_state.game_session_manager.count_sessions_for_user(
+        user.username
+    )
+    total_annotations = (
+        st.session_state.game_session_manager.get_total_annotations_for_user(
+            user.username
+        )
+    )
     col1, col2, col3 = st.columns(3)
-    col1.metric("Total games played", 0)
-    col2.metric("Total annotations made", 0)
+    col1.metric("Total games played", total_games)
+    col2.metric("Total annotations made", total_annotations)
+    # TODO: other metrics
     col3.metric("Average accuracy", "0%")

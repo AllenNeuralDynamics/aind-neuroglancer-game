@@ -92,7 +92,7 @@ def create_user(role: str):
                 role=UserRoles[role].value.label,
                 join_date=datetime.now(),
             )
-            created_user = st.session_state.user_manager.create_user(user)
+            created_user = st.session_state.user_manager.upsert_user(user)
             st.session_state.role = role
             st.session_state.user = created_user
             st.switch_page(Pages.HOME.value.link)

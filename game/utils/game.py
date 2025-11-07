@@ -15,6 +15,7 @@ These should be cleared at the end of the game or when the user exits the game
 
 import streamlit as st
 from config import Constants
+from models import GameSession
 from utils.neuroglancer import get_annotations_from_state
 
 ######### Get game state from session_state #########
@@ -73,10 +74,43 @@ def start_game():
     """Initalize and start the first round of the game if not already started."""
     if "round_started" not in st.session_state:
         game_options = get_game_options_from_session_state()
+        # Create GameSession object
+        game_session = GameSession(
+            username=st.session_state.user.username,
+            game_mode=game_options.get("game_mode", ""),
+            num_rounds=game_options.get("num_rounds", 0),
+            time_per_round=game_options.get("time_per_round", 0),
+        )
+        st.session_state.game_session = game_session
+        # Start the game with first round
+        game_session.start_game()
+        # Save the active game session to db
+        st.session_state.game_session_manager.upsert_session(game_session)
         start_round(1, game_options.get("time_per_round"))
 
 
-def end_game():
+def save_game(
+    total_annotations: int = 0, end_game: bool = False, is_abandoned: bool = False
+):
+    """
+    Save the current game session to the database.
+    Optionally also mark the game as ended or abandoned.
+    If game is abandoned, do not update total annotations.
+    """
+    if "game_session" in st.session_state:
+        if end_game and not is_abandoned:
+            st.session_state.game_session.end_game(total_annotations)
+        elif end_game and is_abandoned:
+            st.session_state.game_session.abandon_game()
+        else:
+            st.session_state.game_session.update_total_annotations(total_annotations)
+        # Save the updated game session to db
+        st.session_state.game_session_manager.upsert_session(
+            st.session_state.game_session
+        )
+
+
+def clear_game():
     """Clear game state from session_state."""
     # TODO: delete the viewer instance if needed
     keys_to_clear = [
@@ -87,6 +121,7 @@ def end_game():
         "viewer_url",
         "game_summary",
         "game_options",
+        "game_session",
     ]
     for key in keys_to_clear:
         if key in st.session_state:
